@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Google Maps API Test</title>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAf6uTECJGDtb6vXJEpynWYFQtYAwt8knI&libraries=places"></script>
+</head>
+<body>
+    <h1>Google Maps API Test</h1>
+    <div id="map" style="width: 100%; height: 400px;"></div>
+    <div id="status"></div>
+    
+    <script>
+        function initMap() {
+            const statusDiv = document.getElementById('status');
+            
+            try {
+                const map = new google.maps.Map(document.getElementById('map'), {
+                    center: { lat: 9.4008, lng: -0.8393 }, // Tamale, Ghana
+                    zoom: 15
+                });
+                
+                const marker = new google.maps.Marker({
+                    position: { lat: 9.4008, lng: -0.8393 },
+                    map: map,
+                    title: 'Test Location'
+                });
+                
+                statusDiv.innerHTML = '<p style="color: green;">✅ Google Maps loaded successfully!</p>';
+            } catch (error) {
+                statusDiv.innerHTML = '<p style="color: red;">❌ Error: ' + error.message + '</p>';
+            }
+        }
+        
+        // Check if Google Maps loaded
+        if (typeof google !== 'undefined' && google.maps) {
+            initMap();
+        } else {
+            document.getElementById('status').innerHTML = '<p style="color: red;">❌ Google Maps API failed to load</p>';
+        }
+    </script>
+</body>
+</html>
