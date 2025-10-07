@@ -58,9 +58,16 @@ export default function AdminLoginPage() {
       // Debug logging (remove in production)
       console.log('Login attempt:', {
         email: formData.email,
+        password: formData.password,
         expectedEmail: process.env.NEXT_PUBLIC_ADMIN_EMAIL,
+        expectedPassword: process.env.NEXT_PUBLIC_ADMIN_PASSWORD,
+        emailMatch: formData.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL,
         passwordMatch: formData.password === process.env.NEXT_PUBLIC_ADMIN_PASSWORD,
-        isValidCredentials
+        isValidCredentials,
+        envVars: {
+          adminEmail: process.env.NEXT_PUBLIC_ADMIN_EMAIL,
+          adminPassword: process.env.NEXT_PUBLIC_ADMIN_PASSWORD
+        }
       })
 
       if (isValidCredentials) {
@@ -81,6 +88,14 @@ export default function AdminLoginPage() {
       setIsLoading(false)
     }
   }
+
+  // Debug: Check if environment variables are loaded
+  console.log('Environment check:', {
+    adminEmail: process.env.NEXT_PUBLIC_ADMIN_EMAIL,
+    adminPassword: process.env.NEXT_PUBLIC_ADMIN_PASSWORD,
+    hasEmail: !!process.env.NEXT_PUBLIC_ADMIN_EMAIL,
+    hasPassword: !!process.env.NEXT_PUBLIC_ADMIN_PASSWORD
+  })
 
   return (
     <div className="min-h-screen relative overflow-hidden">
