@@ -48,7 +48,6 @@ export const adminCreateProperty = async (propertyData: CreatePropertyData): Pro
         images: propertyData.images || [],
         video: propertyData.video,
         proof_document: propertyData.proofDocument,
-        coordinates: propertyData.coordinates || { lat: 0, lng: 0 },
         contact: propertyData.contact || { name: '', phone: '', email: '' },
         uploaded_by: 'admin',
         featured: propertyData.featured || false
@@ -99,7 +98,6 @@ export const adminUpdateProperty = async (id: string, propertyData: Partial<Crea
     if (propertyData.images !== undefined) updateData.images = propertyData.images
     if (propertyData.video !== undefined) updateData.video = propertyData.video
     if (propertyData.proofDocument !== undefined) updateData.proof_document = propertyData.proofDocument
-    if (propertyData.coordinates !== undefined) updateData.coordinates = propertyData.coordinates
     if (propertyData.contact !== undefined) updateData.contact = propertyData.contact
     if (propertyData.featured !== undefined) updateData.featured = propertyData.featured
 

@@ -7,12 +7,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import FileUploader from '@/components/FileUploader'
-import LocationPicker from '@/components/LocationPicker'
 import { UploadedFile, Property } from '@/types'
 import { addProperty } from '@/lib/propertyManager'
 import { 
   Upload, 
-  MapPin, 
   DollarSign, 
   Home, 
   Target, 
@@ -35,10 +33,6 @@ interface PropertyFormData {
   contactName: string
   contactPhone: string
   contactEmail: string
-  coordinates: {
-    lat: number
-    lng: number
-  }
 }
 
 export default function UploadPropertyPage() {
@@ -68,11 +62,7 @@ export default function UploadPropertyPage() {
     description: '',
     contactName: '',
     contactPhone: '',
-    contactEmail: '',
-    coordinates: {
-      lat: 9.4008, // Default to Tamale coordinates
-      lng: -0.8393
-    }
+    contactEmail: ''
   })
 
   const handleInputChange = (field: keyof PropertyFormData, value: string) => {
@@ -82,20 +72,6 @@ export default function UploadPropertyPage() {
     }))
   }
 
-  const handleCoordinateChange = (lat: number, lng: number) => {
-    setFormData(prev => ({
-      ...prev,
-      coordinates: { lat, lng }
-    }))
-  }
-
-  const handleLocationChange = (location: { lat: number; lng: number; address?: string }) => {
-    setFormData(prev => ({
-      ...prev,
-      coordinates: { lat: location.lat, lng: location.lng },
-      location: location.address || prev.location
-    }))
-  }
 
   const clearAllData = () => {
     // Clear all form data
@@ -108,11 +84,7 @@ export default function UploadPropertyPage() {
       description: '',
       contactName: '',
       contactPhone: '',
-      contactEmail: '',
-      coordinates: {
-        lat: 9.4008, // Reset to default Tamale coordinates
-        lng: -0.8393
-      }
+      contactEmail: ''
     })
 
     // Clear all uploaded files
@@ -186,7 +158,6 @@ export default function UploadPropertyPage() {
           type: doc.file.type,
           size: doc.file.size
         })),
-        coordinates: formData.coordinates,
         contact: {
           name: formData.contactName,
           phone: formData.contactPhone,
@@ -373,29 +344,6 @@ export default function UploadPropertyPage() {
             </CardContent>
           </Card>
 
-          {/* Location Map */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <MapPin className="h-5 w-5 mr-2" />
-                Property Location
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <LocationPicker
-                initialLocation={formData.coordinates}
-                onLocationChange={handleLocationChange}
-                className="w-full"
-              />
-              <div className="mt-4 p-3 bg-blue-50 rounded-lg">
-                <p className="text-sm text-blue-800">
-                  <strong>Instructions:</strong> Enter the exact latitude and longitude coordinates of your property. 
-                  You can find these coordinates using online tools like Google Maps, GPS apps, or by using the quick location buttons below. 
-                  This helps potential buyers/tenants find your property easily.
-                </p>
-              </div>
-            </CardContent>
-          </Card>
 
           {/* Media Upload */}
           <Card>

@@ -21,7 +21,6 @@ export interface CreatePropertyData {
   images?: string[]
   video?: string
   proofDocument?: string
-  coordinates?: { lat: number; lng: number }
   contact?: { name: string; phone: string; email: string }
   featured?: boolean
   ownershipDocuments?: Array<{
@@ -192,7 +191,6 @@ export const createProperty = async (propertyData: CreatePropertyData): Promise<
         images: propertyData.images || [],
         video: propertyData.video,
         proof_document: propertyData.proofDocument,
-        coordinates: propertyData.coordinates || { lat: 0, lng: 0 },
         contact: propertyData.contact || { name: '', phone: '', email: '' },
         uploaded_by: 'admin',
         featured: propertyData.featured || false
@@ -244,7 +242,6 @@ export const updateProperty = async (id: string, propertyData: Partial<CreatePro
     if (propertyData.images !== undefined) updateData.images = propertyData.images
     if (propertyData.video !== undefined) updateData.video = propertyData.video
     if (propertyData.proofDocument !== undefined) updateData.proof_document = propertyData.proofDocument
-    if (propertyData.coordinates !== undefined) updateData.coordinates = propertyData.coordinates
     if (propertyData.contact !== undefined) updateData.contact = propertyData.contact
     if (propertyData.featured !== undefined) updateData.featured = propertyData.featured
 

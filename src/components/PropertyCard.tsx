@@ -113,21 +113,6 @@ const PropertyCard = ({ property, onDelete, showDelete = false }: PropertyCardPr
               </Button>
             </Link>
             
-            {/* View on Map Link */}
-            <a
-              href={`https://www.google.com/maps?q=${property.coordinates.lat},${property.coordinates.lng}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="block w-full"
-            >
-              <Button 
-                variant="outline" 
-                className="w-full text-xs py-2 hover:bg-gray-50 transition-colors"
-              >
-                <MapPin className="h-3 w-3 mr-1" />
-                View on Map
-              </Button>
-            </a>
           </div>
         </div>
       </CardContent>

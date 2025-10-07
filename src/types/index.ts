@@ -26,10 +26,6 @@ export interface Property {
   landTitleCertification?: string;
   additionalDocuments?: AdditionalDocument[];
   ownershipDocuments?: OwnershipDocument[];
-  coordinates: {
-    lat: number;
-    lng: number;
-  };
   contact: {
     name: string;
     phone: string;
