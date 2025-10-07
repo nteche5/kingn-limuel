@@ -50,23 +50,30 @@ export default function AdminLoginPage() {
       // Simulate API call delay
       await new Promise(resolve => setTimeout(resolve, 1000))
 
-      // Check credentials against environment variables
+      // Check credentials against environment variables or fallback to hardcoded values
+      const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL || 'services@kinglemuelrealestategh.com'
+      const adminPassword = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'admin123'
+      
       const isValidCredentials = 
-        formData.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL && 
-        formData.password === process.env.NEXT_PUBLIC_ADMIN_PASSWORD
+        formData.email === adminEmail && 
+        formData.password === adminPassword
 
       // Debug logging (remove in production)
       console.log('Login attempt:', {
         email: formData.email,
         password: formData.password,
-        expectedEmail: process.env.NEXT_PUBLIC_ADMIN_EMAIL,
-        expectedPassword: process.env.NEXT_PUBLIC_ADMIN_PASSWORD,
-        emailMatch: formData.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL,
-        passwordMatch: formData.password === process.env.NEXT_PUBLIC_ADMIN_PASSWORD,
+        expectedEmail: adminEmail,
+        expectedPassword: adminPassword,
+        emailMatch: formData.email === adminEmail,
+        passwordMatch: formData.password === adminPassword,
         isValidCredentials,
         envVars: {
           adminEmail: process.env.NEXT_PUBLIC_ADMIN_EMAIL,
           adminPassword: process.env.NEXT_PUBLIC_ADMIN_PASSWORD
+        },
+        fallbackUsed: {
+          email: !process.env.NEXT_PUBLIC_ADMIN_EMAIL,
+          password: !process.env.NEXT_PUBLIC_ADMIN_PASSWORD
         }
       })
 
@@ -90,11 +97,15 @@ export default function AdminLoginPage() {
   }
 
   // Debug: Check if environment variables are loaded
+  const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL || 'services@kinglemuelrealestategh.com'
+  const adminPassword = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'admin123'
+  
   console.log('Environment check:', {
-    adminEmail: process.env.NEXT_PUBLIC_ADMIN_EMAIL,
-    adminPassword: process.env.NEXT_PUBLIC_ADMIN_PASSWORD,
+    adminEmail: adminEmail,
+    adminPassword: adminPassword,
     hasEmail: !!process.env.NEXT_PUBLIC_ADMIN_EMAIL,
-    hasPassword: !!process.env.NEXT_PUBLIC_ADMIN_PASSWORD
+    hasPassword: !!process.env.NEXT_PUBLIC_ADMIN_PASSWORD,
+    usingFallback: !process.env.NEXT_PUBLIC_ADMIN_EMAIL || !process.env.NEXT_PUBLIC_ADMIN_PASSWORD
   })
 
   return (

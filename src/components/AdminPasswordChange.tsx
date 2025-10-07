@@ -57,7 +57,8 @@ export default function AdminPasswordChange({ onPasswordChange }: AdminPasswordC
 
     try {
       // Validate current password
-      if (formData.currentPassword !== process.env.NEXT_PUBLIC_ADMIN_PASSWORD) {
+      const adminPassword = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'admin123'
+      if (formData.currentPassword !== adminPassword) {
         setMessage({ type: 'error', text: 'Current password is incorrect' })
         setIsLoading(false)
         return

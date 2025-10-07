@@ -668,7 +668,7 @@ export default function AdminDashboard() {
               <CardContent className="space-y-4">
                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                   <h4 className="font-medium text-blue-900 mb-2">Current Admin Email</h4>
-                  <p className="text-blue-700">{process.env.NEXT_PUBLIC_ADMIN_EMAIL}</p>
+                  <p className="text-blue-700">{process.env.NEXT_PUBLIC_ADMIN_EMAIL || 'services@kinglemuelrealestategh.com'}</p>
                 </div>
                 
                 <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
