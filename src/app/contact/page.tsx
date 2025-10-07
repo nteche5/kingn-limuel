@@ -38,12 +38,19 @@ export default function ContactPage() {
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle')
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false)
 
   const handleInputChange = (field: keyof ContactFormData, value: string) => {
     setFormData(prev => ({
       ...prev,
       [field]: value
     }))
+    
+    // Clear success/error messages when user starts typing
+    if (submitStatus === 'success' || submitStatus === 'error') {
+      setSubmitStatus('idle')
+      setShowSuccessMessage(false)
+    }
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -60,7 +67,7 @@ export default function ContactPage() {
 
     try {
       // Send contact form data to API
-      const response = await fetch('/api/contact', {
+      const response = await fetch('/api/contact/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -84,6 +91,7 @@ export default function ContactPage() {
       }
       
       setSubmitStatus('success')
+      setShowSuccessMessage(true)
       
       // Reset form
       setFormData({
@@ -93,6 +101,12 @@ export default function ContactPage() {
         address: '',
         message: ''
       })
+
+      // Auto-hide success message after 10 seconds
+      setTimeout(() => {
+        setShowSuccessMessage(false)
+        setSubmitStatus('idle')
+      }, 10000)
 
     } catch (error) {
       console.error('Error submitting contact form:', error)
@@ -113,6 +127,7 @@ export default function ContactPage() {
         
         // Show success message even with fallback
         setSubmitStatus('success')
+        setShowSuccessMessage(true)
         setFormData({
           name: '',
           email: '',
@@ -120,6 +135,12 @@ export default function ContactPage() {
           address: '',
           message: ''
         })
+
+        // Auto-hide success message after 10 seconds
+        setTimeout(() => {
+          setShowSuccessMessage(false)
+          setSubmitStatus('idle')
+        }, 10000)
       } catch (storageError) {
         console.error('Error storing message locally:', storageError)
       }
@@ -214,11 +235,11 @@ export default function ContactPage() {
           {/* Right Column - Contact Form */}
           <div className="space-y-8">
             {/* Success/Error Messages */}
-            {submitStatus === 'success' && (
-              <div className="bg-green-900/20 border border-green-500/30 rounded-lg p-4">
+            {(submitStatus === 'success' || showSuccessMessage) && (
+              <div className="bg-green-900/30 border-2 border-green-500/50 rounded-lg p-4 animate-in fade-in-0 slide-in-from-top-2 duration-500 shadow-lg shadow-green-500/20">
                 <div className="flex items-center">
-                  <CheckCircle className="h-5 w-5 text-green-400 mr-3" />
-                  <div>
+                  <CheckCircle className="h-5 w-5 text-green-400 mr-3 flex-shrink-0" />
+                  <div className="flex-1">
                     <h3 className="text-sm font-medium text-green-300">
                       Message sent successfully!
                     </h3>
@@ -229,12 +250,24 @@ export default function ContactPage() {
                       📧 Your message has been sent via email and will be processed by our team.
                     </p>
                   </div>
+                  <button
+                    onClick={() => {
+                      setShowSuccessMessage(false)
+                      setSubmitStatus('idle')
+                    }}
+                    className="ml-2 text-green-400 hover:text-green-300 transition-colors"
+                    aria-label="Close notification"
+                  >
+                    <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
                 </div>
               </div>
             )}
 
             {submitStatus === 'error' && (
-              <div className="bg-red-900/20 border border-red-500/30 rounded-lg p-4">
+              <div className="bg-red-900/30 border-2 border-red-500/50 rounded-lg p-4 animate-in fade-in-0 slide-in-from-top-2 duration-500 shadow-lg shadow-red-500/20">
                 <div className="flex items-center">
                   <AlertCircle className="h-5 w-5 text-red-400 mr-3" />
                   <div>

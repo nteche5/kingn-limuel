@@ -32,7 +32,7 @@ export const sendContactFormEmail = async (formData: ContactFormData) => {
     // Email content
     const mailOptions = {
       from: process.env.EMAIL_USER, // Sender email
-      to: 'services@kinglemuelrealestategh.com', // King Lemuel Properties email
+      to: 'kinglemuelproperties@gmail.com', // King Lemuel Properties email
       subject: `New Contact Form Submission from ${formData.name}`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9;">
@@ -151,7 +151,7 @@ export const sendContactFormEmailWithSendGrid = async (formData: ContactFormData
   sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 
   const msg = {
-    to: 'services@kinglemuelrealestategh.com',
+    to: 'kinglemuelproperties@gmail.com',
     from: process.env.EMAIL_USER,
     subject: `New Contact Form Submission from ${formData.name}`,
     html: `...`, // Same HTML content as above

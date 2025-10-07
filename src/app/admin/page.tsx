@@ -24,8 +24,10 @@ import {
   Upload,
   Video,
   Settings,
-  AlertTriangle
+  AlertTriangle,
+  LogOut
 } from 'lucide-react'
+import AdminPasswordChange from '@/components/AdminPasswordChange'
 
 interface DashboardStats {
   totalProperties: number
@@ -44,7 +46,7 @@ export default function AdminDashboard() {
     totalRevenue: 0,
     pendingApprovals: 0
   })
-  const [activeTab, setActiveTab] = useState<'overview' | 'properties' | 'upload-video'>('overview')
+  const [activeTab, setActiveTab] = useState<'overview' | 'properties' | 'upload-video' | 'settings'>('overview')
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [propertyToDelete, setPropertyToDelete] = useState<Property | null>(null)
   const [deleteLoading, setDeleteLoading] = useState(false)
@@ -57,7 +59,14 @@ export default function AdminDashboard() {
   const [hideDefaults, setHideDefaults] = useState(false)
 
   useEffect(() => {
-    if (!requireAdmin()) {
+    const isAdminLoggedIn = requireAdmin()
+    console.log('Admin dashboard auth check:', {
+      isAdminLoggedIn,
+      localStorage: typeof window !== 'undefined' ? localStorage.getItem('admin-logged-in') : 'N/A'
+    })
+    
+    if (!isAdminLoggedIn) {
+      console.log('Redirecting to admin-login')
       router.push('/admin-login')
       return
     }
@@ -103,6 +112,12 @@ export default function AdminDashboard() {
       console.error('Error loading properties:', error)
       setErrorMessage('Failed to load properties')
     }
+  }
+
+  const handleLogout = () => {
+    localStorage.removeItem('admin-logged-in')
+    localStorage.removeItem('admin-remember')
+    router.push('/admin-login')
   }
 
   const handleEditProperty = (propertyId: string) => {
@@ -280,14 +295,26 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-gray-50 py-4 sm:py-6 lg:py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Admin Dashboard</h1>
-          <p className="text-gray-600">
-            Manage your properties and track performance
-          </p>
+        <div className="mb-6 sm:mb-8">
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start space-y-4 sm:space-y-0">
+            <div className="flex-1">
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-2">Admin Dashboard</h1>
+              <p className="text-sm sm:text-base text-gray-600">
+                Manage your properties and track performance
+              </p>
+            </div>
+            <Button
+              onClick={handleLogout}
+              variant="outline"
+              className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 w-full sm:w-auto justify-center sm:justify-start"
+            >
+              <LogOut className="h-4 w-4" />
+              <span>Logout</span>
+            </Button>
+          </div>
         </div>
 
         {/* Success/Error Messages */}
@@ -314,27 +341,29 @@ export default function AdminDashboard() {
         )}
 
         {/* Navigation Tabs */}
-        <div className="mb-8">
-          <div className="border-b border-gray-200">
-            <nav className="-mb-px flex space-x-8">
+        <div className="mb-6 sm:mb-8">
+          <div className="border-b border-gray-200 overflow-x-auto">
+            <nav className="-mb-px flex space-x-2 sm:space-x-4 lg:space-x-8 min-w-max sm:min-w-0">
               {[
                 { id: 'overview', label: 'Overview', icon: BarChart3 },
                 { id: 'properties', label: 'Properties', icon: Home },
                 { id: 'upload-video', label: 'Upload Video', icon: Video },
+                { id: 'settings', label: 'Settings', icon: Settings },
               ].map((tab) => {
                 const Icon = tab.icon
                 return (
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id as any)}
-                    className={`flex items-center space-x-2 py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
+                    className={`flex items-center space-x-1 sm:space-x-2 py-2 px-2 sm:px-4 border-b-2 font-medium text-xs sm:text-sm transition-colors whitespace-nowrap ${
                       activeTab === tab.id
                         ? 'border-primary-500 text-primary-600'
                         : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                     }`}
                   >
-                    <Icon className="h-4 w-4" />
-                    <span>{tab.label}</span>
+                    <Icon className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
+                    <span className="hidden xs:inline sm:inline">{tab.label}</span>
+                    <span className="xs:hidden sm:hidden">{tab.label.split(' ')[0]}</span>
                   </button>
                 )
               })}
@@ -346,7 +375,7 @@ export default function AdminDashboard() {
         {activeTab === 'overview' && (
           <div className="space-y-8">
             {/* Stats Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
               <Card>
                 <CardContent className="p-6">
                   <div className="flex items-center">
@@ -466,10 +495,10 @@ export default function AdminDashboard() {
         {activeTab === 'properties' && (
           <div className="space-y-6">
             {/* Properties Header */}
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-2xl font-bold text-gray-900">Properties Management</h2>
-                <p className="text-gray-600">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
+              <div className="flex-1">
+                <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Properties Management</h2>
+                <p className="text-sm sm:text-base text-gray-600">
                   Manage all your property listings ({uploadedPropertiesCount} uploaded, {defaultPropertiesCount} default)
                 </p>
                 {hideDefaults && (
@@ -478,7 +507,7 @@ export default function AdminDashboard() {
                   </p>
                 )}
               </div>
-              <div className="flex space-x-3">
+              <div className="flex flex-wrap gap-2 sm:gap-3">
                 <Button
                   variant="outline"
                   onClick={handleDeleteAllProperties}
@@ -515,7 +544,7 @@ export default function AdminDashboard() {
             </div>
 
             {/* Properties Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
               {properties.map((property) => (
                 <div key={property.id} className="relative">
                   <PropertyCard property={property} />
@@ -550,8 +579,8 @@ export default function AdminDashboard() {
           <div className="space-y-6">
             {/* Upload Video Header */}
             <div>
-              <h2 className="text-2xl font-bold text-gray-900">Upload Property Video</h2>
-              <p className="text-gray-600">Upload promotional videos for your properties</p>
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Upload Property Video</h2>
+              <p className="text-sm sm:text-base text-gray-600">Upload promotional videos for your properties</p>
             </div>
 
             <Card>
@@ -606,6 +635,58 @@ export default function AdminDashboard() {
                       Upload Video
                     </Button>
                   </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
+        {/* Settings Tab */}
+        {activeTab === 'settings' && (
+          <div className="space-y-6">
+            {/* Settings Header */}
+            <div>
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Admin Settings</h2>
+              <p className="text-sm sm:text-base text-gray-600">Manage your admin account and security settings</p>
+            </div>
+
+            {/* Password Change Section */}
+            <div className="max-w-2xl">
+              <AdminPasswordChange 
+                onPasswordChange={(newPassword) => {
+                  setSuccessMessage('Password changed successfully! Please restart the application for changes to take effect.')
+                  setTimeout(() => setSuccessMessage(''), 5000)
+                }}
+              />
+            </div>
+
+            {/* Additional Settings */}
+            <Card className="max-w-2xl">
+              <CardHeader>
+                <CardTitle>Security Information</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <h4 className="font-medium text-blue-900 mb-2">Current Admin Email</h4>
+                  <p className="text-blue-700">{process.env.NEXT_PUBLIC_ADMIN_EMAIL}</p>
+                </div>
+                
+                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                  <h4 className="font-medium text-yellow-900 mb-2">Security Notice</h4>
+                  <p className="text-yellow-700 text-sm">
+                    For production deployment, ensure that admin credentials are stored securely 
+                    and never exposed in client-side code or public repositories.
+                  </p>
+                </div>
+
+                <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                  <h4 className="font-medium text-green-900 mb-2">Best Practices</h4>
+                  <ul className="text-green-700 text-sm space-y-1">
+                    <li>• Use strong, unique passwords</li>
+                    <li>• Change passwords regularly</li>
+                    <li>• Enable two-factor authentication when possible</li>
+                    <li>• Monitor admin access logs</li>
+                  </ul>
                 </div>
               </CardContent>
             </Card>

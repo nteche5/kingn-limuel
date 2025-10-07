@@ -1,16 +1,8 @@
 [build]
-  publish = "out"
   command = "npm run build"
+  publish = ".next"
 
 [build.environment]
   NODE_VERSION = "20"
 
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
-
-[dev]
-  command = "npm run dev"
-  port = 3000
-  publish = "out"
+# Netlify will automatically handle Next.js routing

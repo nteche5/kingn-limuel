@@ -28,7 +28,7 @@ export default function AdminLoginPage() {
   useEffect(() => {
     const isLoggedIn = localStorage.getItem('admin-logged-in') === 'true'
     if (isLoggedIn) {
-      router.push('/upload')
+      router.push('/admin')
     }
   }, [router])
 
@@ -50,10 +50,18 @@ export default function AdminLoginPage() {
       // Simulate API call delay
       await new Promise(resolve => setTimeout(resolve, 1000))
 
-      // Simple admin credentials check
+      // Check credentials against environment variables
       const isValidCredentials = 
-        formData.email === 'services@kinglemuelrealestategh.com' && 
-        formData.password === 'admin123'
+        formData.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL && 
+        formData.password === process.env.NEXT_PUBLIC_ADMIN_PASSWORD
+
+      // Debug logging (remove in production)
+      console.log('Login attempt:', {
+        email: formData.email,
+        expectedEmail: process.env.NEXT_PUBLIC_ADMIN_EMAIL,
+        passwordMatch: formData.password === process.env.NEXT_PUBLIC_ADMIN_PASSWORD,
+        isValidCredentials
+      })
 
       if (isValidCredentials) {
         // Store login state
@@ -62,8 +70,8 @@ export default function AdminLoginPage() {
           localStorage.setItem('admin-remember', 'true')
         }
         
-        // Redirect to upload page
-        router.push('/upload')
+        // Redirect to admin dashboard
+        router.push('/admin')
       } else {
         setError('Invalid username or password')
       }
@@ -190,15 +198,6 @@ export default function AdminLoginPage() {
                 )}
               </Button>
             </form>
-
-            {/* Admin Credentials */}
-            <div className="mt-4 sm:mt-6 p-3 sm:p-4 bg-white bg-opacity-10 rounded-lg border border-white border-opacity-20">
-              <p className="text-white text-opacity-80 text-xs text-center mb-2">Admin Credentials:</p>
-              <div className="text-center space-y-1">
-                <p className="text-white text-opacity-90 text-xs sm:text-sm font-medium">Email: services@kinglemuelrealestategh.com</p>
-                <p className="text-white text-opacity-90 text-xs sm:text-sm font-medium">Password: admin123</p>
-              </div>
-            </div>
           </div>
 
           {/* Footer */}
