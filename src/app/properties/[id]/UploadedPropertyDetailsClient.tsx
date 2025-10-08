@@ -1,33 +1,66 @@
+'use client'
+
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import { MapPin, ArrowLeft, Phone, Mail } from 'lucide-react'
+import { Card, CardContent } from '@/components/ui/Card'
 import ImageGallery from '@/components/ImageGallery'
 import VideoPlayer from '@/components/VideoPlayer'
-import { Card, CardContent } from '@/components/ui/Card'
 import { formatPrice, formatDate } from '@/lib/utils'
 import type { Property } from '@/types'
-import { MapPin, ArrowLeft, Phone, Mail } from 'lucide-react'
-import propertiesData from '@/data/properties.json'
 import PropertyDetailsClient from './PropertyDetailsClient'
-import UploadedPropertyDetailsClient from './UploadedPropertyDetailsClient'
 
-// Required when next.config.js uses output: 'export'
-export function generateStaticParams() {
-  try {
-    return (propertiesData as Array<{ id: string }>).map((p) => ({ id: p.id }))
-  } catch {
-    return []
-  }
+interface UploadedPropertyDetailsClientProps {
+  id: string
 }
 
-export default function PropertyDetailsPage({ params }: { params: { id: string } }) {
-  const propertyJson = (propertiesData as any[]).find((p) => p.id === params.id)
-  if (!propertyJson) {
-    // Fallback to client-side render for uploaded properties stored in localStorage
-    return <UploadedPropertyDetailsClient id={params.id} />
-  }
+const STORAGE_KEY = 'king-limuel-properties'
 
-  const property: Property = {
-    ...propertyJson,
-    createdAt: new Date(propertyJson.createdAt),
+export default function UploadedPropertyDetailsClient({ id }: UploadedPropertyDetailsClientProps) {
+  const [property, setProperty] = useState<Property | null>(null)
+
+  useEffect(() => {
+    const load = () => {
+      try {
+        const raw = typeof window !== 'undefined' ? localStorage.getItem(STORAGE_KEY) : null
+        if (!raw) {
+          setProperty(null)
+          return
+        }
+        const uploaded: any[] = JSON.parse(raw)
+        const found = uploaded.find((p) => p.id === id)
+        if (!found) {
+          setProperty(null)
+          return
+        }
+        const normalized: Property = {
+          ...found,
+          createdAt: new Date(found.createdAt),
+        }
+        setProperty(normalized)
+      } catch (e) {
+        console.error('Failed to load uploaded property:', e)
+        setProperty(null)
+      }
+    }
+
+    load()
+
+    // When admin actions change properties, refresh the view
+    const onUpdated = () => load()
+    window.addEventListener('propertiesUpdated', onUpdated)
+    return () => window.removeEventListener('propertiesUpdated', onUpdated)
+  }, [id])
+
+  if (!property) {
+    return (
+      <div className="max-w-6xl mx-auto px-4 py-8">
+        <Link href="/properties" className="btn btn-ghost mb-4 inline-flex items-center">
+          <ArrowLeft className="h-4 w-4 mr-2" /> Back to properties
+        </Link>
+        <div className="text-center py-24 text-gray-600">Property not found</div>
+      </div>
+    )
   }
 
   return (
@@ -101,4 +134,5 @@ export default function PropertyDetailsPage({ params }: { params: { id: string }
     </div>
   )
 }
+
 

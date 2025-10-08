@@ -472,7 +472,11 @@ export default function AdminDashboard() {
                       <Home className="h-4 w-4 mr-2" />
                       Manage Properties
                     </Button>
-                    <Button variant="outline" className="w-full justify-start">
+                    <Button 
+                      variant="outline" 
+                      className="w-full justify-start"
+                      onClick={() => router.push('/upload')}
+                    >
                       <Plus className="h-4 w-4 mr-2" />
                       Add New Property
                     </Button>
@@ -536,7 +540,7 @@ export default function AdminDashboard() {
                     Remove All Properties
                   </Button>
                 )}
-                <Button>
+                <Button onClick={() => router.push('/upload')}>
                   <Plus className="h-4 w-4 mr-2" />
                   Add Property
                 </Button>

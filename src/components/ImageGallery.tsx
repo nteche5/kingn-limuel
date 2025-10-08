@@ -43,7 +43,7 @@ const ImageGallery = ({ images, title }: ImageGalleryProps) => {
       {/* Main Gallery */}
       <div className="space-y-4">
         {/* Main Image */}
-        <div className="relative w-full h-96 rounded-lg overflow-hidden bg-gray-200">
+        <div className="relative w-full h-64 sm:h-80 md:h-96 rounded-lg overflow-hidden bg-gray-200">
           <Image
             src={images[currentIndex] || '/images/placeholder.jpg'}
             alt={`${title} - Image ${currentIndex + 1}`}
@@ -80,11 +80,11 @@ const ImageGallery = ({ images, title }: ImageGalleryProps) => {
 
         {/* Thumbnail Gallery */}
         {images.length > 1 && (
-          <div className="grid grid-cols-4 gap-2">
+          <div className="grid grid-cols-4 gap-2 sm:gap-3">
             {images.map((image, index) => (
               <div
                 key={index}
-                className={`relative h-20 rounded-lg overflow-hidden cursor-pointer border-2 transition-colors ${
+                className={`relative h-14 sm:h-16 md:h-20 rounded-lg overflow-hidden cursor-pointer border-2 transition-colors ${
                   index === currentIndex ? 'border-primary-500' : 'border-transparent'
                 }`}
                 onClick={() => setCurrentIndex(index)}
@@ -112,7 +112,7 @@ const ImageGallery = ({ images, title }: ImageGalleryProps) => {
               <X className="h-6 w-6" />
             </button>
             
-            <div className="relative w-full h-96 md:h-[500px]">
+            <div className="relative w-full h-72 sm:h-96 md:h-[500px]">
               <Image
                 src={images[currentIndex] || '/images/placeholder.jpg'}
                 alt={`${title} - Full size ${currentIndex + 1}`}
