@@ -23,7 +23,23 @@ export default function PropertiesPage() {
   })
 
   useEffect(() => {
-    const loadProperties = () => {
+    const loadProperties = async () => {
+      try {
+        // Try server properties first
+        const res = await fetch('/api/properties', { cache: 'no-store' })
+        if (res.ok) {
+          const json = await res.json()
+          if (Array.isArray(json?.properties) && json.properties.length > 0) {
+            setProperties(json.properties.map((p: any) => ({
+              ...p,
+              createdAt: new Date(p.createdAt || p.created_at || Date.now())
+            })))
+            return
+          }
+        }
+      } catch (e) {
+        // fall back to local
+      }
       const allProperties = getAllProperties()
       setProperties(allProperties)
     }

@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/Input'
 import FileUploader from '@/components/FileUploader'
 import { UploadedFile, Property } from '@/types'
 import { addProperty } from '@/lib/propertyManager'
+// Files are uploaded via server API to Supabase (service role)
 import { 
   Upload, 
   DollarSign, 
@@ -138,10 +139,62 @@ export default function UploadPropertyPage() {
     setSubmitStatus('idle')
 
     try {
-      // Simulate file upload delay
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      
-      // Create property object
+      // Helper to upload a single file via API
+      const uploadViaApi = async (file: File, folder: string): Promise<string> => {
+        const fd = new FormData()
+        fd.append('file', file)
+        fd.append('folder', folder)
+        const res = await fetch('/api/upload', { method: 'POST', body: fd })
+        const json = await res.json()
+        if (!res.ok || !json.success || !json.file?.url) {
+          throw new Error(json?.error || 'Upload failed')
+        }
+        return json.file.url as string
+      }
+
+      // Upload images
+      const imageUrls = await Promise.all(images.map(f => uploadViaApi(f.file, 'properties/images')))
+      if (imageUrls.length === 0) throw new Error('Image upload failed. Please try again.')
+
+      // Optional video
+      let videoUrl: string | undefined
+      if (video[0]) {
+        try {
+          videoUrl = await uploadViaApi(video[0].file, 'properties/videos')
+        } catch {
+          videoUrl = undefined
+        }
+      }
+
+      // Optional land title certification
+      let landTitleUrl: string | undefined
+      if (landTitleCertification[0]) {
+        try {
+          landTitleUrl = await uploadViaApi(landTitleCertification[0].file, 'properties/documents')
+        } catch {
+          landTitleUrl = undefined
+        }
+      }
+
+      // Additional documents (optional)
+      const additionalDocsResults = await Promise.all(
+        additionalDocuments.map(async (doc) => {
+          try {
+            const url = await uploadViaApi(doc.file, 'properties/documents')
+            return {
+              name: doc.file.name,
+              url,
+              type: doc.file.type,
+              size: doc.file.size,
+            }
+          } catch {
+            return null
+          }
+        })
+      )
+      const additionalDocs = additionalDocsResults.filter(Boolean) as NonNullable<typeof additionalDocsResults[number]>[]
+
+      // Create property object to persist in Supabase via API
       const propertyData: Omit<Property, 'id' | 'createdAt'> = {
         title: formData.title,
         location: formData.location,
@@ -149,15 +202,10 @@ export default function UploadPropertyPage() {
         propertyType: formData.propertyType,
         purpose: formData.purpose,
         description: formData.description,
-        images: images.map(img => URL.createObjectURL(img.file)), // Create local URLs for uploaded images
-        video: video[0] ? URL.createObjectURL(video[0].file) : undefined,
-        landTitleCertification: landTitleCertification[0] ? URL.createObjectURL(landTitleCertification[0].file) : undefined,
-        additionalDocuments: additionalDocuments.map(doc => ({
-          name: doc.file.name,
-          url: URL.createObjectURL(doc.file),
-          type: doc.file.type,
-          size: doc.file.size
-        })),
+        images: imageUrls,
+        video: videoUrl,
+        landTitleCertification: landTitleUrl,
+        additionalDocuments: additionalDocs,
         contact: {
           name: formData.contactName,
           phone: formData.contactPhone,
@@ -167,10 +215,18 @@ export default function UploadPropertyPage() {
         featured: false
       }
 
-      // Save property to localStorage
-      const savedProperty = addProperty(propertyData)
-      
-      console.log('Property saved successfully:', savedProperty)
+      // Save property in Supabase via API
+      const createRes = await fetch('/api/properties', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(propertyData),
+      })
+      const createJson = await createRes.json()
+      if (!createRes.ok || !createJson?.success) {
+        throw new Error(createJson?.error || 'Failed to save property')
+      }
+
+      console.log('Property saved successfully:', createJson.property)
 
       setSubmitStatus('success')
       

@@ -12,7 +12,25 @@ export default function HomePage() {
   const [properties, setProperties] = useState<Property[]>([])
 
   useEffect(() => {
-    const loadProperties = () => {
+    const loadProperties = async () => {
+      try {
+        // Try server properties first
+        const res = await fetch('/api/properties', { cache: 'no-store' })
+        if (res.ok) {
+          const json = await res.json()
+          if (Array.isArray(json?.properties) && json.properties.length > 0) {
+            setProperties(
+              json.properties.map((p: any) => ({
+                ...p,
+                createdAt: new Date(p.createdAt || p.created_at || Date.now())
+              }))
+            )
+            return
+          }
+        }
+      } catch (e) {
+        // fall back to local
+      }
       const allProperties = getAllProperties()
       setProperties(allProperties)
     }
@@ -45,8 +63,8 @@ export default function HomePage() {
   const featuredProperties = properties.filter(property => property.featured)
   
   // Get properties by category
-  const featuredLands = properties.filter(property => 
-    property.propertyType === 'land' && property.purpose === 'buy' && property.featured
+  const landsForSale = properties.filter(property => 
+    property.propertyType === 'land' && property.purpose === 'buy'
   )
   
   const housesForRent = properties.filter(property => 
@@ -168,8 +186,8 @@ export default function HomePage() {
         </section>
       )}
 
-      {/* Featured Lands for Sale */}
-      {featuredLands.length > 0 && (
+      {/* Lands for Sale */}
+      {landsForSale.length > 0 && (
         <section className="py-8 sm:py-12 md:py-16">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-8 sm:mb-12">
@@ -178,7 +196,7 @@ export default function HomePage() {
                   <Building2 className="h-8 w-8 text-green-600" />
                 </div>
                 <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">
-                  Featured Lands for Sale
+                  Lands for Sale
                 </h2>
               </div>
               <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto px-2">
@@ -187,7 +205,7 @@ export default function HomePage() {
             </div>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
-              {featuredLands.map((property) => (
+              {landsForSale.map((property) => (
                 <PropertyCard key={property.id} property={property} />
               ))}
             </div>

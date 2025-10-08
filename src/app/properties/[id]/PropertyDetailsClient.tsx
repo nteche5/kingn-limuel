@@ -1,7 +1,7 @@
 'use client'
 
 import { Card, CardContent } from '@/components/ui/Card'
-import { Download, FileText, ExternalLink } from 'lucide-react'
+import { Download, FileText } from 'lucide-react'
 import type { Property } from '@/types'
 
 interface PropertyDetailsClientProps {
@@ -51,8 +51,11 @@ export default function PropertyDetailsClient({ property }: PropertyDetailsClien
     }
   }
 
-  // Only render if there are documents to show
-  if (!property.ownershipDocuments?.length && !property.additionalDocuments?.length && !property.landTitleCertification) {
+  // Prefer new field; fall back to legacy proofDocument
+  const landTitleUrl = property.landTitleCertification || property.proofDocument
+
+  // Only render if there is a land title to show
+  if (!landTitleUrl) {
     return null
   }
 
@@ -61,104 +64,26 @@ export default function PropertyDetailsClient({ property }: PropertyDetailsClien
       <CardContent className="p-6 space-y-4">
         <h2 className="text-lg font-semibold">Documents</h2>
         <div className="space-y-4">
-          {/* Land Title Certification (from upload) */}
-          {property.landTitleCertification && (
-            <div className="border border-gray-200 rounded-lg p-4 bg-gray-50">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-3">
-                  <div className="p-2 bg-blue-100 rounded-lg">
-                    <FileText className="h-5 w-5 text-blue-600" />
-                  </div>
-                  <div>
-                    <h3 className="font-medium text-gray-900">Land Title Certificate</h3>
-                    <p className="text-sm text-gray-500">Official land title certification</p>
-                  </div>
+          <div className="border border-gray-200 rounded-lg p-4 bg-gray-50">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <div className="p-2 bg-blue-100 rounded-lg">
+                  <FileText className="h-5 w-5 text-blue-600" />
                 </div>
-                <button
-                  onClick={() => handleDownload(property.landTitleCertification!, 'land-title-certificate.pdf')}
-                  className="flex items-center space-x-2 px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
-                >
-                  <Download className="h-4 w-4" />
-                  <span>Download</span>
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* Ownership Documents */}
-          {property.ownershipDocuments?.map((doc, index) => (
-            <div key={`own-${index}`} className="border border-gray-200 rounded-lg p-4 bg-gray-50">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-3">
-                  <div className="p-2 bg-green-100 rounded-lg">
-                    <FileText className="h-5 w-5 text-green-600" />
-                  </div>
-                  <div>
-                    <h3 className="font-medium text-gray-900">{doc.name}</h3>
-                    <p className="text-sm text-gray-500">{doc.description}</p>
-                    <span className="inline-block px-2 py-1 bg-gray-200 text-gray-700 text-xs rounded-full mt-1">
-                      {doc.type.toUpperCase()}
-                    </span>
-                  </div>
-                </div>
-                <div className="flex space-x-2">
-                  <button
-                    onClick={() => handleDownload(doc.url, `${doc.name}.${doc.type}`)}
-                    className="flex items-center space-x-2 px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm"
-                  >
-                    <Download className="h-4 w-4" />
-                    <span>Download</span>
-                  </button>
-                  <a
-                    href={doc.url}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="flex items-center space-x-2 px-3 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors text-sm"
-                  >
-                    <ExternalLink className="h-4 w-4" />
-                    <span>View</span>
-                  </a>
+                <div>
+                  <h3 className="font-medium text-gray-900">Land Title Certificate</h3>
+                  <p className="text-sm text-gray-500">Official land title certification</p>
                 </div>
               </div>
+              <button
+                onClick={() => handleDownload(landTitleUrl!, 'land-title-certificate.pdf')}
+                className="flex items-center space-x-2 px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
+              >
+                <Download className="h-4 w-4" />
+                <span>Download</span>
+              </button>
             </div>
-          ))}
-
-          {/* Additional Documents */}
-          {property.additionalDocuments?.map((doc, index) => (
-            <div key={`add-${index}`} className="border border-gray-200 rounded-lg p-4 bg-gray-50">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-3">
-                  <div className="p-2 bg-purple-100 rounded-lg">
-                    <FileText className="h-5 w-5 text-purple-600" />
-                  </div>
-                  <div>
-                    <h3 className="font-medium text-gray-900">{doc.name}</h3>
-                    <p className="text-sm text-gray-500">
-                      {doc.type} • {(doc.size / 1024 / 1024).toFixed(1)} MB
-                    </p>
-                  </div>
-                </div>
-                <div className="flex space-x-2">
-                  <button
-                    onClick={() => handleDownload(doc.url, doc.name)}
-                    className="flex items-center space-x-2 px-3 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors text-sm"
-                  >
-                    <Download className="h-4 w-4" />
-                    <span>Download</span>
-                  </button>
-                  <a
-                    href={doc.url}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="flex items-center space-x-2 px-3 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors text-sm"
-                  >
-                    <ExternalLink className="h-4 w-4" />
-                    <span>View</span>
-                  </a>
-                </div>
-              </div>
-            </div>
-          ))}
+          </div>
         </div>
       </CardContent>
     </Card>

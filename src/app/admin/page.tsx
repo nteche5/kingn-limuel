@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
 import { requireAdmin } from '@/lib/auth'
+import { adminDeleteProperty } from '@/lib/adminService'
 import { Button } from '@/components/ui/Button'
 import PropertyCard from '@/components/PropertyCard'
 import { Property } from '@/types'
@@ -57,6 +58,8 @@ export default function AdminDashboard() {
   const [successMessage, setSuccessMessage] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
   const [hideDefaults, setHideDefaults] = useState(false)
+  const defaultPropertyIds = new Set((propertiesData as any[]).map(p => p.id))
+  const [backendAvailable, setBackendAvailable] = useState(false)
 
   useEffect(() => {
     const isAdminLoggedIn = requireAdmin()
@@ -75,13 +78,37 @@ export default function AdminDashboard() {
     setHideDefaults(shouldHideDefaultProperties())
   }, [router])
 
-  const loadProperties = () => {
+  const loadProperties = async () => {
     try {
-      // Get properties from localStorage (includes uploaded ones)
+      // First try to load from backend API (includes uploaded files/URLs)
+      const res = await fetch('/api/properties', { cache: 'no-store' })
+      if (res.ok) {
+        const json = await res.json()
+        if (Array.isArray(json?.properties)) {
+          const formatted = json.properties.map((p: any) => ({
+            ...p,
+            createdAt: new Date(p.createdAt || p.created_at || Date.now()),
+            propertyType: p.propertyType as 'land' | 'house',
+            purpose: p.purpose as 'buy' | 'rent',
+            uploadedBy: (p.uploadedBy || 'user') as 'admin' | 'user'
+          })) as Property[]
+
+          setProperties(formatted)
+          setBackendAvailable(true)
+          setStats({
+            totalProperties: formatted.length,
+            totalViews: 1250,
+            totalRevenue: 45000,
+            pendingApprovals: 3
+          })
+          return
+        }
+      }
+
+      // Fallback to legacy localStorage + default JSON
+      setBackendAvailable(false)
       const storedProperties = localStorage.getItem('king-limuel-properties')
       const uploadedProperties: Property[] = storedProperties ? JSON.parse(storedProperties) : []
-      
-      // Combine with default properties from JSON
       const formattedProperties = [
         ...propertiesData.map(property => ({
           ...property,
@@ -98,15 +125,13 @@ export default function AdminDashboard() {
           uploadedBy: property.uploadedBy as 'admin' | 'user'
         }))
       ]
-      
-      setProperties(formattedProperties)
 
-      // Mock stats calculation
+      setProperties(formattedProperties)
       setStats({
         totalProperties: formattedProperties.length,
-        totalViews: 1250, // Mock data
-        totalRevenue: 45000, // Mock data
-        pendingApprovals: 3 // Mock data
+        totalViews: 1250,
+        totalRevenue: 45000,
+        pendingApprovals: 3
       })
     } catch (error) {
       console.error('Error loading properties:', error)
@@ -133,6 +158,12 @@ export default function AdminDashboard() {
     }
   }
 
+  const canDeleteProperty = (property: Property): boolean => {
+    if (defaultPropertyIds.has(property.id)) return false
+    if (property.id.startsWith('uploaded-')) return true
+    return backendAvailable
+  }
+
   const confirmDelete = async () => {
     if (!propertyToDelete) return
 
@@ -141,22 +172,39 @@ export default function AdminDashboard() {
     setSuccessMessage('')
 
     try {
-      const success = deleteProperty(propertyToDelete.id)
-      
-      if (success) {
-        setSuccessMessage(`Property "${propertyToDelete.title}" has been deleted successfully.`)
-        loadProperties() // Reload properties list
-        setShowDeleteModal(false)
-        setPropertyToDelete(null)
-        
-        // Notify other pages about the change
-        window.dispatchEvent(new CustomEvent('propertiesUpdated'))
-        
-        // Clear success message after 3 seconds
-        setTimeout(() => setSuccessMessage(''), 3000)
+      const isDefault = defaultPropertyIds.has(propertyToDelete.id)
+      if (isDefault) {
+        setErrorMessage('Cannot delete default properties.')
+      } else if (propertyToDelete.id.startsWith('uploaded-')) {
+        const success = deleteProperty(propertyToDelete.id)
+        if (success) {
+          setSuccessMessage(`Property "${propertyToDelete.title}" has been deleted successfully.`)
+        } else {
+          setErrorMessage('Failed to delete property. Property may not exist.')
+        }
       } else {
-        setErrorMessage('Failed to delete property. Property may not exist.')
+        if (!backendAvailable) {
+          throw new Error('Backend not configured. Set Supabase env vars to delete this property.')
+        }
+        // Call API route to soft-delete, then optimistically remove from UI
+        const res = await fetch(`/api/properties/${propertyToDelete.id}`, { method: 'DELETE' })
+        if (!res.ok) {
+          const j = await res.json().catch(() => ({}))
+          throw new Error(j?.error || 'Failed to delete property')
+        }
+        setSuccessMessage(`Property "${propertyToDelete.title}" has been deleted successfully.`)
       }
+
+      // Optimistically update UI
+      setProperties(prev => prev.filter(p => p.id !== propertyToDelete.id))
+      setShowDeleteModal(false)
+      const deletedId = propertyToDelete.id
+      setPropertyToDelete(null)
+      window.dispatchEvent(new CustomEvent('propertiesUpdated'))
+      setTimeout(() => setSuccessMessage(''), 3000)
+
+      // Refresh from source of truth
+      await loadProperties()
     } catch (error) {
       console.error('Delete error:', error)
       setErrorMessage(error instanceof Error ? error.message : 'Failed to delete property')
@@ -713,13 +761,17 @@ export default function AdminDashboard() {
                     Are you sure you want to delete <strong>"{propertyToDelete.title}"</strong>?
                     This action cannot be undone.
                   </p>
-                  {propertyToDelete.id.startsWith('uploaded-') ? (
-                    <p className="text-xs text-green-600 mt-2">
-                      ✓ This is an uploaded property and can be deleted.
-                    </p>
-                  ) : (
+                  {defaultPropertyIds.has(propertyToDelete.id) ? (
                     <p className="text-xs text-red-600 mt-2">
                       ⚠ This is a default property and cannot be deleted.
+                    </p>
+                  ) : canDeleteProperty(propertyToDelete) ? (
+                    <p className="text-xs text-green-600 mt-2">
+                      ✓ This property can be deleted.
+                    </p>
+                  ) : (
+                    <p className="text-xs text-yellow-600 mt-2">
+                      ℹ Backend not configured. Set Supabase environment variables to enable deletion.
                     </p>
                   )}
                 </div>
@@ -734,7 +786,7 @@ export default function AdminDashboard() {
                     </Button>
                     <Button
                       onClick={confirmDelete}
-                      disabled={deleteLoading || !propertyToDelete.id.startsWith('uploaded-')}
+                      disabled={deleteLoading || !canDeleteProperty(propertyToDelete)}
                       className="bg-red-600 hover:bg-red-700 text-white"
                     >
                       {deleteLoading ? (

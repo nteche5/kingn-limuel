@@ -2,13 +2,13 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { MapPin, ArrowLeft, Phone, Mail } from 'lucide-react'
+import { MapPin, ArrowLeft, Phone, Mail, Download } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/Card'
 import ImageGallery from '@/components/ImageGallery'
 import VideoPlayer from '@/components/VideoPlayer'
 import { formatPrice, formatDate } from '@/lib/utils'
 import type { Property } from '@/types'
-import PropertyDetailsClient from './PropertyDetailsClient'
+// Removed extra documents section to avoid duplication
 
 interface UploadedPropertyDetailsClientProps {
   id: string
@@ -18,10 +18,27 @@ const STORAGE_KEY = 'king-limuel-properties'
 
 export default function UploadedPropertyDetailsClient({ id }: UploadedPropertyDetailsClientProps) {
   const [property, setProperty] = useState<Property | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    const load = () => {
+    const load = async () => {
+      setIsLoading(true)
       try {
+        // Try API first
+        const res = await fetch(`/api/properties/${id}`, { cache: 'no-store' })
+        if (res.ok) {
+          const json = await res.json()
+          if (json?.property) {
+            const p = json.property as any
+            setProperty({
+              ...p,
+              createdAt: new Date(p.createdAt || p.created_at || Date.now()),
+            })
+            return
+          }
+        }
+
+        // Fallback to localStorage (legacy)
         const raw = typeof window !== 'undefined' ? localStorage.getItem(STORAGE_KEY) : null
         if (!raw) {
           setProperty(null)
@@ -41,6 +58,8 @@ export default function UploadedPropertyDetailsClient({ id }: UploadedPropertyDe
       } catch (e) {
         console.error('Failed to load uploaded property:', e)
         setProperty(null)
+      } finally {
+        setIsLoading(false)
       }
     }
 
@@ -51,6 +70,17 @@ export default function UploadedPropertyDetailsClient({ id }: UploadedPropertyDe
     window.addEventListener('propertiesUpdated', onUpdated)
     return () => window.removeEventListener('propertiesUpdated', onUpdated)
   }, [id])
+
+  if (isLoading) {
+    return (
+      <div className="max-w-6xl mx-auto px-4 py-8">
+        <Link href="/properties" className="btn btn-ghost mb-4 inline-flex items-center">
+          <ArrowLeft className="h-4 w-4 mr-2" /> Back to properties
+        </Link>
+        <div className="text-center py-24 text-gray-600">Loading property...</div>
+      </div>
+    )
+  }
 
   if (!property) {
     return (
@@ -81,13 +111,15 @@ export default function UploadedPropertyDetailsClient({ id }: UploadedPropertyDe
 
           <ImageGallery images={property.images} title={property.title} />
 
-          {property.video && (
-            <Card>
-              <CardContent className="p-0">
-                <VideoPlayer videoUrl={property.video} title={property.title} />
-              </CardContent>
-            </Card>
-          )}
+          <Card>
+            <CardContent className="p-0">
+              {property.video ? (
+                <VideoPlayer videoUrl={property.video} title={property.title} posterUrl={property.images?.[0]} />
+              ) : (
+                <div className="aspect-video flex items-center justify-center text-gray-500 bg-gray-100">No video provided</div>
+              )}
+            </CardContent>
+          </Card>
 
           <Card>
             <CardContent className="p-6 space-y-3">
@@ -96,7 +128,7 @@ export default function UploadedPropertyDetailsClient({ id }: UploadedPropertyDe
             </CardContent>
           </Card>
 
-          <PropertyDetailsClient property={property} />
+          {/* Documents are shown in the right sidebar only */}
         </div>
 
         <div className="space-y-6">
@@ -127,6 +159,26 @@ export default function UploadedPropertyDetailsClient({ id }: UploadedPropertyDe
               >
                 Chat on WhatsApp
               </a>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6 space-y-3">
+              <h2 className="text-lg font-semibold">Documents</h2>
+              {(property.landTitleCertification || (property as any).proofDocument) ? (
+                <a
+                  href={property.landTitleCertification || (property as any).proofDocument}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  download
+                  className="w-full inline-flex items-center justify-center space-x-2 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white transition-colors"
+                >
+                  <Download className="h-4 w-4" />
+                  <span>Download Land Title Certificate</span>
+                </a>
+              ) : (
+                <div className="text-sm text-gray-600">No land title certificate available.</div>
+              )}
             </CardContent>
           </Card>
         </div>

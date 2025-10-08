@@ -6,3 +6,6 @@
   NODE_VERSION = "20"
 
 # Netlify will automatically handle Next.js routing
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
