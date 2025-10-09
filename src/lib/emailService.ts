@@ -1,7 +1,4 @@
-import nodemailer from 'nodemailer'
-
-const EMAIL_USER = process.env.EMAIL_USER || process.env.SMTP_USER || process.env.MAIL_USER
-const EMAIL_PASSWORD = process.env.EMAIL_PASSWORD || process.env.SMTP_PASSWORD || process.env.MAIL_PASSWORD
+const FROM_EMAIL = process.env.MAILCHANNELS_FROM || process.env.EMAIL_USER || 'no-reply@your-domain.com'
 
 interface ContactFormData {
   name: string
@@ -11,33 +8,11 @@ interface ContactFormData {
   message: string
 }
 
-// Create transporter for sending emails
-const createTransporter = () => {
-  // You can use different email providers:
-  // 1. Gmail (recommended for testing)
-  // 2. Outlook/Hotmail
-  // 3. Custom SMTP server
-  // 4. Email services like SendGrid, Mailgun, etc.
-
-  return nodemailer.createTransport({
-    service: 'gmail', // Change this to your preferred service
-    auth: {
-      user: EMAIL_USER, // Your email address
-      pass: EMAIL_PASSWORD, // Your email password or app password
-    },
-  })
-}
-
 export const sendContactFormEmail = async (formData: ContactFormData) => {
   try {
-    const transporter = createTransporter()
-
-    // Email content
-    const mailOptions = {
-      from: EMAIL_USER, // Sender email
-      to: 'kinglemuelproperties@gmail.com', // King Lemuel Properties email
-      subject: `New Contact Form Submission from ${formData.name}`,
-      html: `
+    // Build email payload for MailChannels (Cloudflare Workers compatible)
+    const subject = `New Contact Form Submission from ${formData.name}`
+    const htmlContent = `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9;">
           <div style="background-color: #2C2C2C; color: white; padding: 20px; border-radius: 8px 8px 0 0;">
             <h1 style="margin: 0; font-size: 24px;">New Contact Form Submission</h1>
@@ -101,8 +76,8 @@ export const sendContactFormEmail = async (formData: ContactFormData) => {
             <p>Reply directly to this email to respond to the customer.</p>
           </div>
         </div>
-      `,
-      text: `
+      `
+    const textContent = `
 New Contact Form Submission - King Lemuel Properties
 
 Name: ${formData.name}
@@ -125,17 +100,39 @@ Submitted: ${new Date().toLocaleString('en-US', {
 ---
 This email was sent from the King Lemuel Properties contact form.
 Reply directly to this email to respond to the customer.
-      `,
+      `
+
+    const mailChannelsPayload = {
+      personalizations: [
+        {
+          to: [{ email: 'kinglemuelproperties@gmail.com', name: 'King Lemuel Properties' }],
+        },
+      ],
+      from: { email: FROM_EMAIL, name: 'King Lemuel Properties' },
+      subject,
+      content: [
+        { type: 'text/plain', value: textContent },
+        { type: 'text/html', value: htmlContent },
+      ],
+      headers: {
+        'Reply-To': formData.email,
+      },
     }
 
-    // Send email
-    const result = await transporter.sendMail(mailOptions)
-    console.log('Email sent successfully:', result.messageId)
-    
-    return {
-      success: true,
-      messageId: result.messageId
+    const resp = await fetch('https://api.mailchannels.net/tx/v1/send', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(mailChannelsPayload),
+    })
+
+    if (!resp.ok) {
+      const errText = await resp.text()
+      console.error('MailChannels error:', resp.status, errText)
+      throw new Error('Failed to send email notification')
     }
+
+    const messageId = resp.headers.get('x-message-id') || `${Date.now()}`
+    return { success: true, messageId }
 
   } catch (error) {
     console.error('Error sending email:', error)

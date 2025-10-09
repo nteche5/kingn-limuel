@@ -6,13 +6,15 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "cf:build": "npx @cloudflare/next-on-pages@1",
+    "cf:preview": "npx wrangler pages dev .vercel/output/static",
+    "cf:deploy": "npx wrangler pages deploy .vercel/output/static"
   },
   "dependencies": {
     "@googlemaps/js-api-loader": "^1.16.10",
     "@supabase/supabase-js": "^2.58.0",
     "@types/node": "^20",
-    "@types/nodemailer": "^7.0.2",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "autoprefixer": "^10.0.1",
@@ -21,8 +23,7 @@
     "dotenv": "^17.2.3",
     "framer-motion": "^10.16.5",
     "lucide-react": "^0.294.0",
-    "next": "14.0.4",
-    "nodemailer": "^7.0.7",
+    "next": "^15.0.0",
     "openai": "^6.1.0",
     "postcss": "^8",
     "react": "^18",
@@ -34,6 +35,8 @@
   },
   "devDependencies": {
     "eslint": "^8",
-    "eslint-config-next": "14.0.4"
+    "eslint-config-next": "^15.0.0",
+    "@cloudflare/next-on-pages": "^1.13.6",
+    "wrangler": "^3.83.0"
   }
 }

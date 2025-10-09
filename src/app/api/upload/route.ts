@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabaseAdmin'
 
-export const runtime = 'nodejs'
+export const runtime = 'edge'
 
 export async function POST(req: NextRequest) {
   try {
@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
     const arrayBuffer = await file.arrayBuffer()
     const { error } = await supabaseAdmin.storage
       .from('property-files')
-      .upload(path, Buffer.from(arrayBuffer), {
+      .upload(path, arrayBuffer, {
         contentType: file.type,
         upsert: false,
       })

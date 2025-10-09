@@ -1,0 +1,17 @@
+name = "king-limuel-properties"
+compatibility_date = "2024-09-02"
+
+# Cloudflare Pages output directory produced by `@cloudflare/next-on-pages`
+pages_build_output_dir = ".vercel/output/static"
+
+[vars]
+# Configure these in Cloudflare Pages project settings; values here are placeholders.
+NEXT_PUBLIC_SUPABASE_URL = ""
+NEXT_PUBLIC_SUPABASE_ANON_KEY = ""
+SUPABASE_URL = ""
+SUPABASE_ANON_KEY = ""
+SUPABASE_SERVICE_ROLE_KEY = ""
+MAILCHANNELS_FROM = "no-reply@your-domain.com"
+
+
+

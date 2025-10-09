@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabaseAdmin'
 
-export const runtime = 'nodejs'
+export const runtime = 'edge'
 
 function mapDbRowToProperty(row: any, ownershipDocs?: any[]) {
   return {
@@ -30,7 +30,7 @@ function mapDbRowToProperty(row: any, ownershipDocs?: any[]) {
 
 export async function GET(
   _req: Request,
-  { params }: { params: { id: string } }
+  { params }: any
 ) {
   try {
     if (!supabaseAdmin) {
@@ -58,7 +58,7 @@ export async function GET(
 
 export async function DELETE(
   _req: Request,
-  { params }: { params: { id: string } }
+  { params }: any
 ) {
   try {
     if (!supabaseAdmin) {
