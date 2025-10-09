@@ -90,17 +90,17 @@ const SearchBar = () => {
   }
 
   return (
-    <div className="bg-white/80 backdrop-blur-md border border-white/60 shadow-xl p-2 sm:p-3 rounded-full max-w-5xl mx-auto">
-      <div className="flex flex-col sm:flex-row items-stretch gap-2 sm:gap-3">
+    <div className="bg-white/80 backdrop-blur-md border border-white/60 shadow-xl p-1.5 sm:p-3 rounded-full max-w-5xl mx-auto">
+      <div className="flex flex-col sm:flex-row items-stretch gap-1.5 sm:gap-3">
         {/* Location */}
         <div className="relative sm:flex-1" ref={dropdownRefs.location}>
           <div className="relative">
-            <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 z-10" />
+            <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-gray-400 z-10" />
             <button
               type="button"
               aria-label="Select location"
               onClick={() => toggleDropdown('location')}
-              className="w-full h-11 sm:h-12 pl-10 pr-8 rounded-full bg-transparent hover:bg-white/60 border-0 text-left flex items-center justify-between text-sm sm:text-base focus-visible:ring-2 focus-visible:ring-primary-500"
+              className="w-full h-10 sm:h-12 pl-9 sm:pl-10 pr-7 sm:pr-8 rounded-full bg-transparent hover:bg-white/60 border-0 text-left flex items-center justify-between text-sm sm:text-base focus-visible:ring-2 focus-visible:ring-primary-500"
             >
               <span className={filters.location ? 'text-gray-900' : 'text-gray-500'}>
                 {getDisplayValue('location')}
@@ -138,12 +138,12 @@ const SearchBar = () => {
         {/* Property Type */}
         <div className="relative sm:flex-1" ref={dropdownRefs.propertyType}>
           <div className="relative">
-            <Building2 className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 z-10" />
+            <Building2 className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-gray-400 z-10" />
             <button
               type="button"
               aria-label="Select property type"
               onClick={() => toggleDropdown('propertyType')}
-              className="w-full h-11 sm:h-12 pl-10 pr-8 rounded-full bg-transparent hover:bg-white/60 border-0 text-left flex items-center justify-between text-sm sm:text-base focus-visible:ring-2 focus-visible:ring-primary-500"
+              className="w-full h-10 sm:h-12 pl-9 sm:pl-10 pr-7 sm:pr-8 rounded-full bg-transparent hover:bg-white/60 border-0 text-left flex items-center justify-between text-sm sm:text-base focus-visible:ring-2 focus-visible:ring-primary-500"
             >
               <span className={filters.propertyType ? 'text-gray-900' : 'text-gray-500'}>
                 {getDisplayValue('propertyType')}
@@ -186,12 +186,12 @@ const SearchBar = () => {
         {/* Purpose */}
         <div className="relative sm:flex-1" ref={dropdownRefs.purpose}>
           <div className="relative">
-            <Target className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 z-10" />
+            <Target className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-gray-400 z-10" />
             <button
               type="button"
               aria-label="Select purpose"
               onClick={() => toggleDropdown('purpose')}
-              className="w-full h-11 sm:h-12 pl-10 pr-8 rounded-full bg-transparent hover:bg-white/60 border-0 text-left flex items-center justify-between text-sm sm:text-base focus-visible:ring-2 focus-visible:ring-primary-500"
+              className="w-full h-10 sm:h-12 pl-9 sm:pl-10 pr-7 sm:pr-8 rounded-full bg-transparent hover:bg-white/60 border-0 text-left flex items-center justify-between text-sm sm:text-base focus-visible:ring-2 focus-visible:ring-primary-500"
             >
               <span className={filters.purpose ? 'text-gray-900' : 'text-gray-500'}>
                 {getDisplayValue('purpose')}
@@ -234,10 +234,10 @@ const SearchBar = () => {
         <div className="sm:ml-auto">
           <Button
             onClick={handleSearch}
-            className="w-full sm:w-auto h-11 sm:h-12 px-5 sm:px-6 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-full flex items-center justify-center space-x-2 text-sm sm:text-base shadow-md"
+            className="w-full sm:w-auto h-10 sm:h-12 px-4 sm:px-6 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-full flex items-center justify-center space-x-2 text-sm sm:text-base shadow-md"
           >
             <Search className="h-4 w-4 sm:h-5 sm:w-5" />
-            <span>Search</span>
+            <span className="hidden sm:inline">Search</span>
           </Button>
         </div>
       </div>
