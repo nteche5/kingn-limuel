@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { MapPin, ArrowLeft, Phone, Mail, Download } from 'lucide-react'
+import { MapPin, ArrowLeft, Phone, Mail, Download, FileText } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/Card'
 import ImageGallery from '@/components/ImageGallery'
 import VideoPlayer from '@/components/VideoPlayer'
@@ -128,7 +128,47 @@ export default function UploadedPropertyDetailsClient({ id }: UploadedPropertyDe
             </CardContent>
           </Card>
 
-          {/* Documents are shown in the right sidebar only */}
+          {/* Mobile Documents (visible on small screens) */}
+          <Card className="lg:hidden">
+            <CardContent className="p-6 space-y-4">
+              <h2 className="text-lg font-semibold">Documents</h2>
+              {(property.landTitleCertification || (property as any).proofDocument) ? (
+                <a
+                  href={property.landTitleCertification || (property as any).proofDocument}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  download
+                  className="w-full inline-flex items-center justify-center space-x-2 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white transition-colors"
+                >
+                  <Download className="h-4 w-4" />
+                  <span>Download Land Title Certificate</span>
+                </a>
+              ) : (
+                <div className="text-sm text-gray-600">No land title certificate available.</div>
+              )}
+
+              {Array.isArray((property as any).ownershipDocuments) && (property as any).ownershipDocuments.length > 0 && (
+                <div className="space-y-2">
+                  {(property as any).ownershipDocuments.map((doc: any, idx: number) => (
+                    <a
+                      key={`${doc.url}-${idx}`}
+                      href={doc.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      download
+                      className="w-full inline-flex items-center justify-between px-3 py-2 rounded-lg border border-gray-200 hover:bg-gray-50 text-gray-700"
+                    >
+                      <span className="inline-flex items-center space-x-2">
+                        <FileText className="h-4 w-4 text-blue-600" />
+                        <span className="truncate max-w-[220px]">{doc.name || 'Document'}</span>
+                      </span>
+                      <Download className="h-4 w-4 text-gray-500" />
+                    </a>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
         </div>
 
         <div className="space-y-6">
@@ -162,7 +202,7 @@ export default function UploadedPropertyDetailsClient({ id }: UploadedPropertyDe
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="hidden lg:block">
             <CardContent className="p-6 space-y-3">
               <h2 className="text-lg font-semibold">Documents</h2>
               {(property.landTitleCertification || (property as any).proofDocument) ? (
@@ -178,6 +218,27 @@ export default function UploadedPropertyDetailsClient({ id }: UploadedPropertyDe
                 </a>
               ) : (
                 <div className="text-sm text-gray-600">No land title certificate available.</div>
+              )}
+
+              {Array.isArray((property as any).ownershipDocuments) && (property as any).ownershipDocuments.length > 0 && (
+                <div className="space-y-2">
+                  {(property as any).ownershipDocuments.map((doc: any, idx: number) => (
+                    <a
+                      key={`${doc.url}-${idx}`}
+                      href={doc.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      download
+                      className="w-full inline-flex items-center justify-between px-3 py-2 rounded-lg border border-gray-200 hover:bg-gray-50 text-gray-700"
+                    >
+                      <span className="inline-flex items-center space-x-2">
+                        <FileText className="h-4 w-4 text-blue-600" />
+                        <span className="truncate max-w-[220px]">{doc.name || 'Document'}</span>
+                      </span>
+                      <Download className="h-4 w-4 text-gray-500" />
+                    </a>
+                  ))}
+                </div>
               )}
             </CardContent>
           </Card>
