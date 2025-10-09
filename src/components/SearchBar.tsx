@@ -90,33 +90,30 @@ const SearchBar = () => {
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6 max-w-4xl mx-auto">
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+    <div className="bg-white/80 backdrop-blur-md border border-white/60 shadow-xl p-2 sm:p-3 rounded-full max-w-5xl mx-auto">
+      <div className="flex flex-col sm:flex-row items-stretch gap-2 sm:gap-3">
         {/* Location */}
-        <div className="relative" ref={dropdownRefs.location}>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Location
-          </label>
+        <div className="relative sm:flex-1" ref={dropdownRefs.location}>
           <div className="relative">
             <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 z-10" />
             <button
               type="button"
+              aria-label="Select location"
               onClick={() => toggleDropdown('location')}
-              className="w-full pl-10 pr-10 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-white text-left flex items-center justify-between text-sm sm:text-base"
+              className="w-full h-11 sm:h-12 pl-10 pr-8 rounded-full bg-transparent hover:bg-white/60 border-0 text-left flex items-center justify-between text-sm sm:text-base focus-visible:ring-2 focus-visible:ring-primary-500"
             >
               <span className={filters.location ? 'text-gray-900' : 'text-gray-500'}>
                 {getDisplayValue('location')}
               </span>
               <ChevronDown className={`h-4 w-4 text-gray-400 transition-transform ${openDropdown === 'location' ? 'rotate-180' : ''}`} />
             </button>
-            
             {openDropdown === 'location' && (
               <div 
-                className="absolute z-20 w-full mt-1 bg-white border border-red-300 rounded-lg shadow-lg max-h-60 overflow-y-auto"
+                className="absolute z-20 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto"
                 onMouseDown={handleDropdownMouseDown}
               >
                 <div
-                  className="px-4 py-3 text-red-500 cursor-pointer hover:bg-red-50"
+                  className="px-4 py-3 text-primary-600 cursor-pointer hover:bg-primary-50"
                   onClick={() => handleInputChange('location', '')}
                 >
                   Select Location
@@ -124,8 +121,8 @@ const SearchBar = () => {
                 {LOCATION_OPTIONS.map((option) => (
                   <div
                     key={option.value}
-                    className={`px-4 py-3 cursor-pointer hover:bg-red-50 ${
-                      filters.location === option.value ? 'bg-red-100 text-red-700' : 'text-gray-900'
+                    className={`px-4 py-3 cursor-pointer hover:bg-primary-50 ${
+                      filters.location === option.value ? 'bg-primary-100 text-primary-700' : 'text-gray-900'
                     }`}
                     onClick={() => handleInputChange('location', option.value)}
                   >
@@ -136,47 +133,45 @@ const SearchBar = () => {
             )}
           </div>
         </div>
+        <div className="hidden sm:block w-px self-stretch bg-gray-200/70" aria-hidden="true" />
 
         {/* Property Type */}
-        <div className="relative" ref={dropdownRefs.propertyType}>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Property Type
-          </label>
+        <div className="relative sm:flex-1" ref={dropdownRefs.propertyType}>
           <div className="relative">
             <Building2 className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 z-10" />
             <button
               type="button"
+              aria-label="Select property type"
               onClick={() => toggleDropdown('propertyType')}
-              className="w-full pl-10 pr-10 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-white text-left flex items-center justify-between text-sm sm:text-base"
+              className="w-full h-11 sm:h-12 pl-10 pr-8 rounded-full bg-transparent hover:bg-white/60 border-0 text-left flex items-center justify-between text-sm sm:text-base focus-visible:ring-2 focus-visible:ring-primary-500"
             >
               <span className={filters.propertyType ? 'text-gray-900' : 'text-gray-500'}>
                 {getDisplayValue('propertyType')}
               </span>
               <ChevronDown className={`h-4 w-4 text-gray-400 transition-transform ${openDropdown === 'propertyType' ? 'rotate-180' : ''}`} />
             </button>
-            
             {openDropdown === 'propertyType' && (
               <div 
-                className="absolute z-20 w-full mt-1 bg-white border border-red-300 rounded-lg shadow-lg"
+                className="absolute z-20 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg"
                 onMouseDown={handleDropdownMouseDown}
               >
                 <div
-                  className="px-4 py-3 text-red-500 cursor-pointer hover:bg-red-50"
+                  className="px-4 py-3 text-primary-600 cursor-pointer hover:bg-primary-50"
                   onClick={() => handleInputChange('propertyType', '')}
                 >
                   Property Type
                 </div>
                 <div
-                  className={`px-4 py-3 cursor-pointer hover:bg-red-50 ${
-                    filters.propertyType === 'land' ? 'bg-red-100 text-red-700' : 'text-gray-900'
+                  className={`px-4 py-3 cursor-pointer hover:bg-primary-50 ${
+                    filters.propertyType === 'land' ? 'bg-primary-100 text-primary-700' : 'text-gray-900'
                   }`}
                   onClick={() => handleInputChange('propertyType', 'land')}
                 >
                   Land
                 </div>
                 <div
-                  className={`px-4 py-3 cursor-pointer hover:bg-red-50 ${
-                    filters.propertyType === 'house' ? 'bg-red-100 text-red-700' : 'text-gray-900'
+                  className={`px-4 py-3 cursor-pointer hover:bg-primary-50 ${
+                    filters.propertyType === 'house' ? 'bg-primary-100 text-primary-700' : 'text-gray-900'
                   }`}
                   onClick={() => handleInputChange('propertyType', 'house')}
                 >
@@ -186,47 +181,45 @@ const SearchBar = () => {
             )}
           </div>
         </div>
+        <div className="hidden sm:block w-px self-stretch bg-gray-200/70" aria-hidden="true" />
 
         {/* Purpose */}
-        <div className="relative" ref={dropdownRefs.purpose}>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Purpose
-          </label>
+        <div className="relative sm:flex-1" ref={dropdownRefs.purpose}>
           <div className="relative">
             <Target className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 z-10" />
             <button
               type="button"
+              aria-label="Select purpose"
               onClick={() => toggleDropdown('purpose')}
-              className="w-full pl-10 pr-10 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-white text-left flex items-center justify-between text-sm sm:text-base"
+              className="w-full h-11 sm:h-12 pl-10 pr-8 rounded-full bg-transparent hover:bg-white/60 border-0 text-left flex items-center justify-between text-sm sm:text-base focus-visible:ring-2 focus-visible:ring-primary-500"
             >
               <span className={filters.purpose ? 'text-gray-900' : 'text-gray-500'}>
                 {getDisplayValue('purpose')}
               </span>
               <ChevronDown className={`h-4 w-4 text-gray-400 transition-transform ${openDropdown === 'purpose' ? 'rotate-180' : ''}`} />
             </button>
-            
             {openDropdown === 'purpose' && (
               <div 
-                className="absolute z-20 w-full mt-1 bg-white border border-red-300 rounded-lg shadow-lg"
+                className="absolute z-20 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg"
                 onMouseDown={handleDropdownMouseDown}
               >
                 <div
-                  className="px-4 py-3 text-red-500 cursor-pointer hover:bg-red-50"
+                  className="px-4 py-3 text-primary-600 cursor-pointer hover:bg-primary-50"
                   onClick={() => handleInputChange('purpose', '')}
                 >
                   Purpose
                 </div>
                 <div
-                  className={`px-4 py-3 cursor-pointer hover:bg-red-50 ${
-                    filters.purpose === 'buy' ? 'bg-red-100 text-red-700' : 'text-gray-900'
+                  className={`px-4 py-3 cursor-pointer hover:bg-primary-50 ${
+                    filters.purpose === 'buy' ? 'bg-primary-100 text-primary-700' : 'text-gray-900'
                   }`}
                   onClick={() => handleInputChange('purpose', 'buy')}
                 >
                   Buy
                 </div>
                 <div
-                  className={`px-4 py-3 cursor-pointer hover:bg-red-50 ${
-                    filters.purpose === 'rent' ? 'bg-red-100 text-red-700' : 'text-gray-900'
+                  className={`px-4 py-3 cursor-pointer hover:bg-primary-50 ${
+                    filters.purpose === 'rent' ? 'bg-primary-100 text-primary-700' : 'text-gray-900'
                   }`}
                   onClick={() => handleInputChange('purpose', 'rent')}
                 >
@@ -238,10 +231,10 @@ const SearchBar = () => {
         </div>
 
         {/* Search Button */}
-        <div className="flex items-end sm:col-span-2 lg:col-span-1">
+        <div className="sm:ml-auto">
           <Button
             onClick={handleSearch}
-            className="w-full h-10 sm:h-12 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-lg flex items-center justify-center space-x-2 text-sm sm:text-base"
+            className="w-full sm:w-auto h-11 sm:h-12 px-5 sm:px-6 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-full flex items-center justify-center space-x-2 text-sm sm:text-base shadow-md"
           >
             <Search className="h-4 w-4 sm:h-5 sm:w-5" />
             <span>Search</span>
