@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { sendContactFormEmail } from '@/lib/emailService'
 
-// Force dynamic rendering for this API route
+// Force dynamic rendering for this API route and run on Edge
 export const dynamic = 'force-dynamic'
+export const runtime = 'edge'
 
 export async function POST(request: NextRequest) {
   try {

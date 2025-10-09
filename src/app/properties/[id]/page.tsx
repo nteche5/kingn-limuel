@@ -18,12 +18,13 @@ export function generateStaticParams() {
   }
 }
 
-export default function PropertyDetailsPage({ params }: { params: { id: string } }) {
+export default async function PropertyDetailsPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
   // Try to use static JSON first (for default properties)
-  const propertyJson = (propertiesData as any[]).find((p) => p.id === params.id)
+  const propertyJson = (propertiesData as any[]).find((p) => p.id === id)
   if (!propertyJson) {
     // Fallback to client-side fetch from API/localStorage for uploaded properties
-    return <UploadedPropertyDetailsClient id={params.id} />
+    return <UploadedPropertyDetailsClient id={id} />
   }
 
   const property: Property = {

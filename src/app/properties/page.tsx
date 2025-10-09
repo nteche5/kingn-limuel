@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import PropertyCard from '@/components/PropertyCard'
 import { Property, SearchFilters } from '@/types'
@@ -8,7 +8,7 @@ import { getAllProperties, deleteProperty } from '@/lib/propertyManager'
 import { Filter, Grid, List, RefreshCw } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 
-export default function PropertiesPage() {
+function PropertiesPageInner() {
   const searchParams = useSearchParams()
   const [properties, setProperties] = useState<Property[]>([])
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
@@ -349,6 +349,14 @@ export default function PropertiesPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function PropertiesPage() {
+  return (
+    <Suspense>
+      <PropertiesPageInner />
+    </Suspense>
   )
 }
 

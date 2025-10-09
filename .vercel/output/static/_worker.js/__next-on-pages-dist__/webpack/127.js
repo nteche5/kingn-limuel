@@ -1,0 +1,1 @@
+var _={},l=(n,p,S)=>(_.__chunk_127=(c,t,E)=>{"use strict";E.d(t,{E:()=>r});var o=E(606);let e="https://qftyljzbwruydpzzivdx.supabase.co",s=process.env.SUPABASE_SERVICE_ROLE_KEY||process.env.SUPABASE_SERVICE_ROLE||process.env.SUPABASE_SERVICE_KEY||process.env.SERVICE_ROLE_KEY,r=e&&s?(0,o.UU)(e,s):null},_);export{l as __getNamedExports};
