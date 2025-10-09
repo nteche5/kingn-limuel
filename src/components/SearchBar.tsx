@@ -90,22 +90,22 @@ const SearchBar = () => {
   }
 
   return (
-    <div className="bg-white/80 backdrop-blur-md border border-white/60 shadow-xl p-1 sm:p-3 rounded-full max-w-5xl mx-auto">
-      <div className="flex flex-col sm:flex-row items-stretch gap-1 sm:gap-3">
+    <div className="bg-white/80 backdrop-blur-md border border-white/60 shadow-lg p-0.5 sm:p-3 rounded-full max-w-5xl mx-auto">
+      <div className="flex flex-row flex-wrap items-stretch gap-1 sm:flex-nowrap sm:gap-3">
         {/* Location */}
-        <div className="relative sm:flex-1" ref={dropdownRefs.location}>
+        <div className="relative flex-1 min-w-[120px] sm:flex-1" ref={dropdownRefs.location}>
           <div className="relative">
-            <MapPin className="absolute left-2.5 sm:left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-gray-400 z-10" />
+            <MapPin className="absolute left-2 sm:left-3 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 sm:h-5 sm:w-5 text-gray-400 z-10" />
             <button
               type="button"
               aria-label="Select location"
               onClick={() => toggleDropdown('location')}
-              className="w-full h-9 sm:h-12 pl-8 sm:pl-10 pr-6 sm:pr-8 rounded-full bg-transparent hover:bg-white/60 border-0 text-left flex items-center justify-between text-xs sm:text-base focus-visible:ring-2 focus-visible:ring-primary-500"
+              className="w-full h-8 sm:h-12 pl-7 sm:pl-10 pr-5 sm:pr-8 rounded-full bg-transparent hover:bg-white/60 border-0 text-left flex items-center justify-between text-[11px] sm:text-base focus-visible:ring-2 focus-visible:ring-primary-500"
             >
               <span className={`${filters.location ? 'text-gray-900' : 'text-gray-500'} truncate max-w-[75%]`}>
                 {getDisplayValue('location')}
               </span>
-              <ChevronDown className={`h-4 w-4 text-gray-400 transition-transform ${openDropdown === 'location' ? 'rotate-180' : ''}`} />
+              <ChevronDown className={`h-3.5 w-3.5 sm:h-4 sm:w-4 text-gray-400 transition-transform ${openDropdown === 'location' ? 'rotate-180' : ''}`} />
             </button>
             {openDropdown === 'location' && (
               <div 
@@ -136,19 +136,19 @@ const SearchBar = () => {
         <div className="hidden sm:block w-px self-stretch bg-gray-200/70" aria-hidden="true" />
 
         {/* Property Type */}
-        <div className="relative sm:flex-1" ref={dropdownRefs.propertyType}>
+        <div className="relative flex-1 min-w-[120px] sm:flex-1" ref={dropdownRefs.propertyType}>
           <div className="relative">
-            <Building2 className="absolute left-2.5 sm:left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-gray-400 z-10" />
+            <Building2 className="absolute left-2 sm:left-3 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 sm:h-5 sm:w-5 text-gray-400 z-10" />
             <button
               type="button"
               aria-label="Select property type"
               onClick={() => toggleDropdown('propertyType')}
-              className="w-full h-9 sm:h-12 pl-8 sm:pl-10 pr-6 sm:pr-8 rounded-full bg-transparent hover:bg-white/60 border-0 text-left flex items-center justify-between text-xs sm:text-base focus-visible:ring-2 focus-visible:ring-primary-500"
+              className="w-full h-8 sm:h-12 pl-7 sm:pl-10 pr-5 sm:pr-8 rounded-full bg-transparent hover:bg-white/60 border-0 text-left flex items-center justify-between text-[11px] sm:text-base focus-visible:ring-2 focus-visible:ring-primary-500"
             >
               <span className={`${filters.propertyType ? 'text-gray-900' : 'text-gray-500'} truncate max-w-[75%]`}>
                 {getDisplayValue('propertyType')}
               </span>
-              <ChevronDown className={`h-4 w-4 text-gray-400 transition-transform ${openDropdown === 'propertyType' ? 'rotate-180' : ''}`} />
+              <ChevronDown className={`h-3.5 w-3.5 sm:h-4 sm:w-4 text-gray-400 transition-transform ${openDropdown === 'propertyType' ? 'rotate-180' : ''}`} />
             </button>
             {openDropdown === 'propertyType' && (
               <div 
@@ -184,19 +184,19 @@ const SearchBar = () => {
         <div className="hidden sm:block w-px self-stretch bg-gray-200/70" aria-hidden="true" />
 
         {/* Purpose */}
-        <div className="relative sm:flex-1" ref={dropdownRefs.purpose}>
+        <div className="relative flex-1 min-w-[120px] sm:flex-1" ref={dropdownRefs.purpose}>
           <div className="relative">
-            <Target className="absolute left-2.5 sm:left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-gray-400 z-10" />
+            <Target className="absolute left-2 sm:left-3 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 sm:h-5 sm:w-5 text-gray-400 z-10" />
             <button
               type="button"
               aria-label="Select purpose"
               onClick={() => toggleDropdown('purpose')}
-              className="w-full h-9 sm:h-12 pl-8 sm:pl-10 pr-6 sm:pr-8 rounded-full bg-transparent hover:bg-white/60 border-0 text-left flex items-center justify-between text-xs sm:text-base focus-visible:ring-2 focus-visible:ring-primary-500"
+              className="w-full h-8 sm:h-12 pl-7 sm:pl-10 pr-5 sm:pr-8 rounded-full bg-transparent hover:bg-white/60 border-0 text-left flex items-center justify-between text-[11px] sm:text-base focus-visible:ring-2 focus-visible:ring-primary-500"
             >
               <span className={`${filters.purpose ? 'text-gray-900' : 'text-gray-500'} truncate max-w-[75%]`}>
                 {getDisplayValue('purpose')}
               </span>
-              <ChevronDown className={`h-4 w-4 text-gray-400 transition-transform ${openDropdown === 'purpose' ? 'rotate-180' : ''}`} />
+              <ChevronDown className={`h-3.5 w-3.5 sm:h-4 sm:w-4 text-gray-400 transition-transform ${openDropdown === 'purpose' ? 'rotate-180' : ''}`} />
             </button>
             {openDropdown === 'purpose' && (
               <div 
@@ -231,10 +231,10 @@ const SearchBar = () => {
         </div>
 
         {/* Search Button */}
-        <div className="sm:ml-auto">
+        <div className="flex-none sm:ml-auto">
           <Button
             onClick={handleSearch}
-            className="w-full sm:w-auto h-9 sm:h-12 px-3 sm:px-6 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-full flex items-center justify-center space-x-2 text-xs sm:text-base shadow-md"
+            className="w-8 h-8 sm:w-auto sm:h-12 sm:px-6 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-full flex items-center justify-center space-x-2 text-xs sm:text-base shadow-md p-0"
           >
             <Search className="h-4 w-4 sm:h-5 sm:w-5" />
             <span className="hidden sm:inline">Search</span>
