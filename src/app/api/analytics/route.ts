@@ -13,7 +13,9 @@ export async function GET(request: NextRequest) {
     startDate.setDate(startDate.getDate() - periodDays)
 
     // If Supabase is not configured, or as a safe fallback, compute simple analytics from static data
-    const useMock = !process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+    const hasUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL || process.env.PUBLIC_SUPABASE_URL
+    const hasAnon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY || process.env.PUBLIC_SUPABASE_ANON_KEY
+    const useMock = !hasUrl || !hasAnon
 
     const computeFromStatic = () => {
       const stats = (propertiesData as any[])

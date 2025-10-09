@@ -1,5 +1,8 @@
 import nodemailer from 'nodemailer'
 
+const EMAIL_USER = process.env.EMAIL_USER || process.env.SMTP_USER || process.env.MAIL_USER
+const EMAIL_PASSWORD = process.env.EMAIL_PASSWORD || process.env.SMTP_PASSWORD || process.env.MAIL_PASSWORD
+
 interface ContactFormData {
   name: string
   email: string
@@ -19,8 +22,8 @@ const createTransporter = () => {
   return nodemailer.createTransport({
     service: 'gmail', // Change this to your preferred service
     auth: {
-      user: process.env.EMAIL_USER, // Your email address
-      pass: process.env.EMAIL_PASSWORD, // Your email password or app password
+      user: EMAIL_USER, // Your email address
+      pass: EMAIL_PASSWORD, // Your email password or app password
     },
   })
 }
@@ -31,7 +34,7 @@ export const sendContactFormEmail = async (formData: ContactFormData) => {
 
     // Email content
     const mailOptions = {
-      from: process.env.EMAIL_USER, // Sender email
+      from: EMAIL_USER, // Sender email
       to: 'kinglemuelproperties@gmail.com', // King Lemuel Properties email
       subject: `New Contact Form Submission from ${formData.name}`,
       html: `
@@ -152,7 +155,7 @@ export const sendContactFormEmailWithSendGrid = async (formData: ContactFormData
 
   const msg = {
     to: 'kinglemuelproperties@gmail.com',
-    from: process.env.EMAIL_USER,
+    from: EMAIL_USER,
     subject: `New Contact Form Submission from ${formData.name}`,
     html: `...`, // Same HTML content as above
     text: `...`, // Same text content as above
