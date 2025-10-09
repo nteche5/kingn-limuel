@@ -124,6 +124,16 @@ For detailed deployment instructions, see [DEPLOYMENT.md](./DEPLOYMENT.md)
 3. Enable GitHub Pages with "GitHub Actions" source
 4. Your site will be live at `https://yourusername.github.io/king-limuel-properties2/`
 
+## 🚀 Deployment to Netlify (with Supabase)
+
+If you deploy to Netlify and use Supabase-backed API routes:
+
+1. Configure required environment variables in Netlify (Production): see `NETLIFY_SETUP.md`.
+2. Ensure `@netlify/plugin-nextjs` is enabled (already configured in `netlify.toml`).
+3. Trigger a deploy with cache clear in Netlify after adding environment variables.
+
+For full instructions, read `NETLIFY_SETUP.md`.
+
 ## Project Structure
 
 ```

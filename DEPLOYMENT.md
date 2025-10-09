@@ -141,3 +141,31 @@ Once deployed, you'll have a professional real estate website that:
 - ✅ Is completely free to host
 
 Your King Limuel Properties website is now live and ready for the world to see! 🏠✨
+
+## 🚀 Deployment to Netlify (Recommended for dynamic API)
+
+Use Netlify if you rely on Supabase and server API routes.
+
+### Required Environment Variables (Production)
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- `SUPABASE_SERVICE_ROLE_KEY`
+- `SUPABASE_STORAGE_BUCKET` (default: `property-files`)
+- `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` (if using Google Maps)
+
+### Steps
+1. Create a new site in Netlify and connect your GitHub repo
+2. In Site settings → Build & deploy → Environment → Environment variables, add the variables above
+3. Ensure the build command and plugin are set (already in `netlify.toml`)
+4. Trigger a fresh deploy: Deploys → Trigger deploy → Clear cache and deploy site
+
+### CLI alternative
+```bash
+netlify env:set NEXT_PUBLIC_SUPABASE_URL https://YOUR-PROJECT.supabase.co --context production
+netlify env:set NEXT_PUBLIC_SUPABASE_ANON_KEY <your-anon-key> --context production
+netlify env:set SUPABASE_SERVICE_ROLE_KEY <your-service-role-key> --context production
+netlify env:set SUPABASE_STORAGE_BUCKET property-files --context production
+netlify env:set NEXT_PUBLIC_GOOGLE_MAPS_API_KEY <your-google-maps-key> --context production
+```
+
+For details, see `NETLIFY_SETUP.md`.
