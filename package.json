@@ -6,7 +6,14 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "type-check": "tsc --noEmit",
+    "type-check:watch": "tsc --noEmit --watch",
+    "build:type-check": "npm run build && npm run type-check",
+    "dev:type-check": "concurrently \"npm run dev\" \"npm run type-check:watch\"",
+    "lint:fix": "next lint --fix",
+    "preview": "next start",
+    "vercel-build": "npm run build:type-check"
   },
   "engines": {
     "node": ">=20 <21",
@@ -36,7 +43,8 @@
   },
   "devDependencies": {
     "eslint": "^8",
-    "eslint-config-next": "^15.0.0"
-    
+    "eslint-config-next": "^15.0.0",
+    "concurrently": "^8.2.0",
+    "@types/google.maps": "^3.55.8"
   }
 }
