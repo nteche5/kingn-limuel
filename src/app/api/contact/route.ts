@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { sendContactFormEmail } from '@/lib/emailService'
 
-// Force dynamic rendering for this API route and run on Edge
+// Force dynamic rendering for this API route. Use Node.js runtime for email (SMTP/Nodemailer)
 export const dynamic = 'force-dynamic'
-export const runtime = 'edge'
+export const runtime = 'nodejs'
 
 export async function POST(request: NextRequest) {
   try {

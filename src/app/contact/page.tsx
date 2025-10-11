@@ -77,8 +77,8 @@ export default function ContactPage() {
 
       const result = await response.json()
 
-      if (!response.ok) {
-        throw new Error(result.error || 'Failed to send message')
+      if (!response.ok || !result?.success) {
+        throw new Error(result?.error || 'Failed to send message')
       }
       
       console.log('Contact message sent successfully:', result)
@@ -111,39 +111,6 @@ export default function ContactPage() {
     } catch (error) {
       console.error('Error submitting contact form:', error)
       setSubmitStatus('error')
-      
-      // Fallback: Store message locally even if API fails
-      const fallbackMessage = {
-        id: Date.now().toString(),
-        ...formData,
-        status: 'pending',
-        created_at: new Date().toISOString()
-      }
-      
-      try {
-        const existingMessages = JSON.parse(localStorage.getItem('contact_messages') || '[]')
-        existingMessages.push(fallbackMessage)
-        localStorage.setItem('contact_messages', JSON.stringify(existingMessages))
-        
-        // Show success message even with fallback
-        setSubmitStatus('success')
-        setShowSuccessMessage(true)
-        setFormData({
-          name: '',
-          email: '',
-          phone: '',
-          address: '',
-          message: ''
-        })
-
-        // Auto-hide success message after 10 seconds
-        setTimeout(() => {
-          setShowSuccessMessage(false)
-          setSubmitStatus('idle')
-        }, 10000)
-      } catch (storageError) {
-        console.error('Error storing message locally:', storageError)
-      }
     } finally {
       setIsSubmitting(false)
     }

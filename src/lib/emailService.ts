@@ -1,4 +1,4 @@
-const FROM_EMAIL = process.env.MAILCHANNELS_FROM || process.env.EMAIL_USER || 'no-reply@your-domain.com'
+const FROM_EMAIL = process.env.EMAIL_USER || process.env.MAIL_FROM || 'no-reply@your-domain.com'
 
 interface ContactFormData {
   name: string
@@ -10,7 +10,6 @@ interface ContactFormData {
 
 export const sendContactFormEmail = async (formData: ContactFormData) => {
   try {
-    // Build email payload for MailChannels (Cloudflare Workers compatible)
     const subject = `New Contact Form Submission from ${formData.name}`
     const htmlContent = `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9;">
@@ -102,68 +101,97 @@ This email was sent from the King Lemuel Properties contact form.
 Reply directly to this email to respond to the customer.
       `
 
-    const mailChannelsPayload = {
-      personalizations: [
-        {
-          to: [{ email: 'kinglemuelproperties@gmail.com', name: 'King Lemuel Properties' }],
+    // Prefer SendGrid via API if configured
+    if (process.env.SENDGRID_API_KEY) {
+      const payload = {
+        personalizations: [
+          {
+            to: [{ email: 'kinglemuelproperties57@gmail.com', name: 'King Lemuel Properties' }],
+            subject,
+          },
+        ],
+        from: { email: FROM_EMAIL, name: 'King Lemuel Properties' },
+        reply_to: { email: formData.email },
+        content: [
+          { type: 'text/plain', value: textContent },
+          { type: 'text/html', value: htmlContent },
+        ],
+      }
+
+      const resp = await fetch('https://api.sendgrid.com/v3/mail/send', {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+          authorization: `Bearer ${process.env.SENDGRID_API_KEY}`,
         },
-      ],
-      from: { email: FROM_EMAIL, name: 'King Lemuel Properties' },
-      subject,
-      content: [
-        { type: 'text/plain', value: textContent },
-        { type: 'text/html', value: htmlContent },
-      ],
-      headers: {
-        'Reply-To': formData.email,
-      },
+        body: JSON.stringify(payload),
+      })
+
+      if (!resp.ok) {
+        const errText = await resp.text()
+        console.error('SendGrid error:', resp.status, errText)
+        throw new Error('Failed to send email notification')
+      }
+
+      const messageId = resp.headers.get('x-message-id') || `${Date.now()}`
+      return { success: true, messageId }
     }
 
-    const resp = await fetch('https://api.mailchannels.net/tx/v1/send', {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify(mailChannelsPayload),
-    })
+    // Fallback to SMTP using Nodemailer (requires Node runtime)
+    if (process.env.EMAIL_USER && process.env.EMAIL_PASSWORD) {
+      const nodemailer = await import('nodemailer')
 
-    if (!resp.ok) {
-      const errText = await resp.text()
-      console.error('MailChannels error:', resp.status, errText)
-      throw new Error('Failed to send email notification')
+      const isGmail = /gmail\.com$/i.test(process.env.EMAIL_USER)
+      let transporter
+      if (isGmail) {
+        // Use Gmail service preset for best compatibility with App Passwords
+        transporter = nodemailer.createTransport({
+          service: 'gmail',
+          auth: {
+            user: process.env.EMAIL_USER as string,
+            pass: process.env.EMAIL_PASSWORD as string,
+          },
+        })
+      } else {
+        const smtpHost = process.env.EMAIL_HOST || 'smtp.yourdomain.com'
+        const smtpPort = process.env.EMAIL_PORT ? Number(process.env.EMAIL_PORT) : 587
+        const smtpSecure = process.env.EMAIL_SECURE ? process.env.EMAIL_SECURE === 'true' : false
+        transporter = nodemailer.createTransport({
+          host: smtpHost,
+          port: smtpPort,
+          secure: smtpSecure,
+          auth: {
+            user: process.env.EMAIL_USER as string,
+            pass: process.env.EMAIL_PASSWORD as string,
+          },
+        })
+      }
+
+      // Skip SMTP verify to allow direct send; Gmail can reject verify in some environments
+
+      const info = await transporter.sendMail({
+        to: 'kinglemuelproperties57@gmail.com',
+        from: {
+          name: 'King Lemuel Properties',
+          address: FROM_EMAIL,
+        },
+        replyTo: formData.email,
+        subject,
+        text: textContent,
+        html: htmlContent,
+      })
+
+      const messageId = (info && (info.messageId as string)) || `${Date.now()}`
+      return { success: true, messageId }
     }
 
-    const messageId = resp.headers.get('x-message-id') || `${Date.now()}`
-    return { success: true, messageId }
+    throw new Error('Email service is not configured. Set SENDGRID_API_KEY or SMTP env vars.')
 
   } catch (error) {
     console.error('Error sending email:', error)
-    throw new Error('Failed to send email notification')
+    const message = error instanceof Error ? error.message : 'Unknown email error'
+    throw new Error(message)
   }
 }
 
-// Alternative: SendGrid integration (if you prefer)
-export const sendContactFormEmailWithSendGrid = async (formData: ContactFormData) => {
-  // This is an alternative implementation using SendGrid
-  // You would need to install @sendgrid/mail and set SENDGRID_API_KEY
-  // Uncomment and modify this if you prefer SendGrid over Nodemailer
-  
-  /*
-  const sgMail = require('@sendgrid/mail')
-  sgMail.setApiKey(process.env.SENDGRID_API_KEY)
-
-  const msg = {
-    to: 'kinglemuelproperties@gmail.com',
-    from: EMAIL_USER,
-    subject: `New Contact Form Submission from ${formData.name}`,
-    html: `...`, // Same HTML content as above
-    text: `...`, // Same text content as above
-  }
-
-  try {
-    await sgMail.send(msg)
-    return { success: true }
-  } catch (error) {
-    console.error('SendGrid error:', error)
-    throw new Error('Failed to send email notification')
-  }
-  */
-}
+// removed unused alternative stub
