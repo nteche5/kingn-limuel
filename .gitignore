@@ -87,3 +87,9 @@ jspm_packages/
 
 # Local Netlify folder
 .netlify
+ 
+# Vercel local build artifacts (never commit)
+.vercel
+.vercel/
+.vercel_build_output/
+.output/
