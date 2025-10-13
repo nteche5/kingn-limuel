@@ -14,6 +14,7 @@ interface FileUploaderProps {
   maxSize?: number // in MB
   accept?: string
   label?: string
+  maxVideoDurationSeconds?: number
 }
 
 const FileUploader = ({
@@ -24,7 +25,8 @@ const FileUploader = ({
   maxFiles = 5,
   maxSize = 10,
   accept,
-  label
+  label,
+  maxVideoDurationSeconds
 }: FileUploaderProps) => {
   const [isDragOver, setIsDragOver] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -100,10 +102,40 @@ const FileUploader = ({
     const validFiles: UploadedFile[] = []
     const errors: string[] = []
 
+    const durationChecks: Promise<void>[] = []
+
     fileArray.forEach((file) => {
       const validationError = validateFile(file)
       if (validationError) {
         errors.push(`${file.name}: ${validationError}`)
+        return
+      }
+
+      if (type === 'video' && maxVideoDurationSeconds) {
+        const url = URL.createObjectURL(file)
+        durationChecks.push(new Promise((resolve) => {
+          const videoEl = document.createElement('video')
+          videoEl.preload = 'metadata'
+          videoEl.onloadedmetadata = () => {
+            const duration = Math.floor(videoEl.duration || 0)
+            if (duration > maxVideoDurationSeconds) {
+              errors.push(`${file.name}: Video must be <= ${Math.floor(maxVideoDurationSeconds / 60)} minutes`)
+            } else {
+              const uploadedFile: UploadedFile = {
+                file,
+                preview: url,
+                type
+              }
+              validFiles.push(uploadedFile)
+            }
+            resolve()
+          }
+          videoEl.onerror = () => {
+            errors.push(`${file.name}: Could not read video metadata`)
+            resolve()
+          }
+          videoEl.src = url
+        }))
       } else {
         const uploadedFile: UploadedFile = {
           file,
@@ -114,13 +146,15 @@ const FileUploader = ({
       }
     })
 
-    if (errors.length > 0) {
-      setError(errors.join(', '))
-    }
+    Promise.all(durationChecks).then(() => {
+      if (errors.length > 0) {
+        setError(errors.join(', '))
+      }
 
-    if (validFiles.length > 0) {
-      onFilesChange([...files, ...validFiles])
-    }
+      if (validFiles.length > 0) {
+        onFilesChange([...files, ...validFiles])
+      }
+    })
   }, [files, onFilesChange, maxFiles, maxSize, type])
 
   const handleDrop = useCallback((e: React.DragEvent) => {

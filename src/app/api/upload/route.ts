@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabaseAdmin'
 
-export const runtime = 'edge'
+export const runtime = 'nodejs'
 
 export async function POST(req: NextRequest) {
   try {
@@ -18,9 +18,9 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'No file provided' }, { status: 400 })
     }
 
-    const maxSize = 10 * 1024 * 1024
+    const maxSize = 200 * 1024 * 1024 // 200MB
     if (file.size > maxSize) {
-      return NextResponse.json({ error: 'File too large (max 10MB)' }, { status: 400 })
+      return NextResponse.json({ error: 'File too large (max 200MB)' }, { status: 400 })
     }
 
     const timestamp = Date.now()

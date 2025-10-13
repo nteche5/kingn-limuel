@@ -156,14 +156,10 @@ export default function UploadPropertyPage() {
       const imageUrls = await Promise.all(images.map(f => uploadViaApi(f.file, 'properties/images')))
       if (imageUrls.length === 0) throw new Error('Image upload failed. Please try again.')
 
-      // Optional video
+      // Optional video - if present and upload fails, abort with error
       let videoUrl: string | undefined
       if (video[0]) {
-        try {
-          videoUrl = await uploadViaApi(video[0].file, 'properties/videos')
-        } catch {
-          videoUrl = undefined
-        }
+        videoUrl = await uploadViaApi(video[0].file, 'properties/videos')
       }
 
       // Optional land title certification
@@ -428,6 +424,7 @@ export default function UploadPropertyPage() {
                 maxFiles={1}
                 maxSize={100}
                 label="Property Video (Optional)"
+                maxVideoDurationSeconds={300}
               />
 
               <FileUploader
