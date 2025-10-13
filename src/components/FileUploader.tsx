@@ -271,11 +271,13 @@ const FileUploader = ({
                       className="w-full h-full object-cover"
                     />
                   ) : type === 'video' ? (
-                    <video
-                      src={uploadedFile.preview}
-                      className="w-full h-full object-cover"
-                      controls
-                    />
+                    <div className="aspect-video w-full h-full bg-black">
+                      <video
+                        src={uploadedFile.preview}
+                        className="w-full h-full object-contain"
+                        controls
+                      />
+                    </div>
                   ) : (
                     <div className="w-full h-full flex items-center justify-center">
                       <FileText className="h-8 w-8 text-gray-400" />

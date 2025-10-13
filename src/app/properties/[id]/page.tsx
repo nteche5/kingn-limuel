@@ -102,7 +102,7 @@ export default async function PropertyDetailsPage({ params }: { params: Promise<
                     >
                       <span className="inline-flex items-center space-x-2">
                         <FileText className="h-4 w-4 text-blue-600" />
-                        <span className="truncate max-w-[220px]">{doc.name || 'Document'}</span>
+                        <span className="truncate md:whitespace-normal md:break-words max-w-[220px] md:max-w-none">{doc.name || 'Document'}</span>
                       </span>
                       <Download className="h-4 w-4 text-gray-500" />
                     </a>
