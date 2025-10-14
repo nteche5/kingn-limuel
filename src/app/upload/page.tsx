@@ -152,9 +152,9 @@ export default function UploadPropertyPage() {
         return json.file.url as string
       }
 
-      const uploadDirect = async (file: File, folder: string): Promise<string> => {
+      const uploadDirect = async (file: File, folder: string, maxSizeMb: number = 200): Promise<string> => {
         const { uploadFile } = await import('@/lib/uploadService')
-        const result = await uploadFile(file, folder, undefined, type === 'video' ? 200 : 20)
+        const result = await uploadFile(file, folder, undefined, maxSizeMb)
         if (!result.success || !result.file?.url) {
           throw new Error(result.error || 'Upload failed')
         }
@@ -169,7 +169,7 @@ export default function UploadPropertyPage() {
       let videoUrl: string | undefined
       if (video[0]) {
         try {
-          videoUrl = await uploadDirect(video[0].file, 'properties/videos')
+          videoUrl = await uploadDirect(video[0].file, 'properties/videos', 200)
         } catch {
           // fallback to API (useful on dev or if anon upload restricted)
           videoUrl = await uploadViaApi(video[0].file, 'properties/videos')
