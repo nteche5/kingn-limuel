@@ -16,15 +16,16 @@ export interface UploadResult {
 export const uploadFile = async (
   file: File,
   folder: string = 'uploads',
-  propertyId?: string
+  propertyId?: string,
+  maxSizeMb: number = 10
 ): Promise<UploadResult> => {
   try {
-    // Validate file size (max 10MB)
-    const maxSize = 10 * 1024 * 1024 // 10MB
+    // Validate file size (configurable, default 10MB)
+    const maxSize = maxSizeMb * 1024 * 1024
     if (file.size > maxSize) {
       return {
         success: false,
-        error: 'File size too large. Maximum size is 10MB.'
+        error: `File size too large. Maximum size is ${maxSizeMb}MB.`
       }
     }
 
@@ -36,7 +37,9 @@ export const uploadFile = async (
       'image/webp',
       'application/pdf',
       'video/mp4',
-      'video/webm'
+      'video/webm',
+      'video/quicktime', // MOV
+      'video/x-msvideo'  // AVI
     ]
 
     if (!allowedTypes.includes(file.type)) {
@@ -55,14 +58,10 @@ export const uploadFile = async (
     // Create file path
     const filePath = propertyId ? `${folder}/${propertyId}/${fileName}` : `${folder}/${fileName}`
 
-    // Convert file to buffer
-    const arrayBuffer = await file.arrayBuffer()
-    const buffer = new Uint8Array(arrayBuffer)
-
-    // Upload to Supabase Storage
+    // Upload to Supabase Storage (use File directly for better browser/mobile support)
     const { data, error } = await supabase.storage
       .from('property-files')
-      .upload(filePath, buffer, {
+      .upload(filePath, file, {
         contentType: file.type,
         upsert: false
       })

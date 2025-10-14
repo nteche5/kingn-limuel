@@ -139,7 +139,7 @@ export default function UploadPropertyPage() {
     setSubmitStatus('idle')
 
     try {
-      // Helper to upload a single file via API
+      // Helper to upload a single file
       const uploadViaApi = async (file: File, folder: string): Promise<string> => {
         const fd = new FormData()
         fd.append('file', file)
@@ -152,6 +152,15 @@ export default function UploadPropertyPage() {
         return json.file.url as string
       }
 
+      const uploadDirect = async (file: File, folder: string): Promise<string> => {
+        const { uploadFile } = await import('@/lib/uploadService')
+        const result = await uploadFile(file, folder, undefined, type === 'video' ? 200 : 20)
+        if (!result.success || !result.file?.url) {
+          throw new Error(result.error || 'Upload failed')
+        }
+        return result.file.url
+      }
+
       // Upload images
       const imageUrls = await Promise.all(images.map(f => uploadViaApi(f.file, 'properties/images')))
       if (imageUrls.length === 0) throw new Error('Image upload failed. Please try again.')
@@ -159,7 +168,12 @@ export default function UploadPropertyPage() {
       // Optional video - if present and upload fails, abort with error
       let videoUrl: string | undefined
       if (video[0]) {
-        videoUrl = await uploadViaApi(video[0].file, 'properties/videos')
+        try {
+          videoUrl = await uploadDirect(video[0].file, 'properties/videos')
+        } catch {
+          // fallback to API (useful on dev or if anon upload restricted)
+          videoUrl = await uploadViaApi(video[0].file, 'properties/videos')
+        }
       }
 
       // Optional land title certification
@@ -422,7 +436,7 @@ export default function UploadPropertyPage() {
                 type="video"
                 multiple={false}
                 maxFiles={1}
-                maxSize={100}
+                maxSize={200}
                 label="Property Video (Optional)"
                 maxVideoDurationSeconds={300}
               />
