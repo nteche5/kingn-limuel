@@ -152,26 +152,42 @@ export default function UploadPropertyPage() {
         return json.file.url as string
       }
 
-      const uploadDirect = async (file: File, folder: string, maxSizeMb: number = 200): Promise<string> => {
-        const { uploadFile } = await import('@/lib/uploadService')
-        const result = await uploadFile(file, folder, undefined, maxSizeMb)
-        if (!result.success || !result.file?.url) {
-          throw new Error(result.error || 'Upload failed')
+      const uploadViaSignedUrl = async (file: File, folder: string): Promise<string> => {
+        const res = await fetch('/api/storage/signed-upload', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ folder, fileName: file.name })
+        })
+        const json = await res.json()
+        if (!res.ok || !json?.token || !json?.path) {
+          throw new Error(json?.error || 'Failed to get signed URL')
         }
-        return result.file.url
+
+        const uploadRes = await fetch(json.token, {
+          method: 'PUT',
+          headers: { 'Content-Type': file.type || 'application/octet-stream' },
+          body: file
+        })
+        if (!uploadRes.ok) {
+          throw new Error('Failed to upload via signed URL')
+        }
+
+        // Get public URL
+        const { supabase } = await import('@/lib/supabase')
+        const { data } = supabase.storage.from('property-files').getPublicUrl(json.path)
+        return data.publicUrl
       }
 
       // Upload images
       const imageUrls = await Promise.all(images.map(f => uploadViaApi(f.file, 'properties/images')))
       if (imageUrls.length === 0) throw new Error('Image upload failed. Please try again.')
 
-      // Optional video - if present and upload fails, abort with error
+      // Optional video - try signed URL (best for mobile), fallback to API
       let videoUrl: string | undefined
       if (video[0]) {
         try {
-          videoUrl = await uploadDirect(video[0].file, 'properties/videos', 200)
+          videoUrl = await uploadViaSignedUrl(video[0].file, 'properties/videos')
         } catch {
-          // fallback to API (useful on dev or if anon upload restricted)
           videoUrl = await uploadViaApi(video[0].file, 'properties/videos')
         }
       }
@@ -190,7 +206,12 @@ export default function UploadPropertyPage() {
       const additionalDocsResults = await Promise.all(
         additionalDocuments.map(async (doc) => {
           try {
-            const url = await uploadViaApi(doc.file, 'properties/documents')
+            let url: string
+            try {
+              url = await uploadViaSignedUrl(doc.file, 'properties/documents')
+            } catch {
+              url = await uploadViaApi(doc.file, 'properties/documents')
+            }
             return {
               name: doc.file.name,
               url,
