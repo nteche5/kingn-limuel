@@ -183,84 +183,73 @@ const Navbar = () => {
 
         {/* Mobile Navigation Menu - partial left drawer */}
         {isMobileMenuOpen && (
-          <>
-            {/* Background overlay */}
-            <div 
-              className="fixed inset-0 bg-black/40 z-40 md:hidden"
-              onClick={toggleMobileMenu}
-            />
-            
-            {/* Drawer panel */}
-            <div className="fixed inset-y-0 left-0 w-[70vw] max-w-xs bg-slate-950 shadow-2xl z-50 md:hidden animate-slide-left">
-              <div className="relative h-full px-6 py-8 flex flex-col">
-                {/* Close button (matches reference pill) */}
-                <div className="flex justify-end">
-                  <button
-                    onClick={toggleMobileMenu}
-                    aria-label="Close menu"
-                    className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-emerald-400 bg-slate-900 text-emerald-200 shadow-sm"
-                  >
-                    <svg
-                      className="h-5 w-5"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
+          <div className="fixed inset-y-0 left-0 w-[68vw] max-w-sm bg-[#04070f] text-white shadow-2xl z-50 md:hidden animate-slide-left">
+            <div className="relative h-full px-6 py-10 flex flex-col">
+              {/* Close button floating on edge */}
+              <button
+                onClick={toggleMobileMenu}
+                aria-label="Close menu"
+                className="absolute -right-5 top-6 flex h-10 w-10 items-center justify-center rounded-full border-2 border-emerald-400 bg-slate-900 text-emerald-200 shadow-lg"
+              >
+                <svg
+                  className="h-5 w-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+
+              <nav className="mt-6 space-y-6">
+                {navItems.map((item) => {
+                  const isActive =
+                    pathname === item.href ||
+                    (item.href.startsWith('/properties') &&
+                      pathname.startsWith('/properties')) ||
+                    (item.href === '/admin' && pathname.startsWith('/admin'))
+
+                  return (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className={cn(
+                        'block text-lg font-medium',
+                        isActive ? 'text-white' : 'text-slate-100'
+                      )}
                     >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M6 18L18 6M6 6l12 12"
-                      />
-                    </svg>
-                  </button>
+                      {item.label}
+                    </Link>
+                  )
+                })}
+
+                <div className="border-t border-white/10 pt-6 space-y-2">
+                  {adminStatus ? (
+                    <button
+                      onClick={handleLogout}
+                      className="w-full text-left text-base font-medium text-slate-100"
+                    >
+                      Admin Logout
+                    </button>
+                  ) : (
+                    <Link
+                      href="/admin-login"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="block text-base font-medium text-slate-100"
+                    >
+                      Admin Login
+                    </Link>
+                  )}
                 </div>
-
-                <nav className="mt-10 space-y-6">
-                  {navItems.map((item) => {
-                    const isActive =
-                      pathname === item.href ||
-                      (item.href.startsWith('/properties') &&
-                        pathname.startsWith('/properties')) ||
-                      (item.href === '/admin' && pathname.startsWith('/admin'))
-
-                    return (
-                      <Link
-                        key={item.href}
-                        href={item.href}
-                        onClick={() => setIsMobileMenuOpen(false)}
-                        className={cn(
-                          'block text-lg font-medium transition-colors',
-                          isActive ? 'text-white' : 'text-slate-100 hover:text-white'
-                        )}
-                      >
-                        {item.label}
-                      </Link>
-                    )
-                  })}
-
-                  <div className="border-t border-white/20 pt-6 space-y-2">
-                    {adminStatus ? (
-                      <button
-                        onClick={handleLogout}
-                        className="w-full text-left text-base font-medium text-slate-100 hover:text-white transition-colors"
-                      >
-                        Admin Logout
-                      </button>
-                    ) : (
-                      <Link
-                        href="/admin-login"
-                        onClick={() => setIsMobileMenuOpen(false)}
-                        className="block text-base font-medium text-slate-100 hover:text-white transition-colors"
-                      >
-                        Admin Login
-                      </Link>
-                    )}
-                  </div>
-                </nav>
-              </div>
+              </nav>
             </div>
-          </>
+          </div>
         )}
       </div>
     </nav>
