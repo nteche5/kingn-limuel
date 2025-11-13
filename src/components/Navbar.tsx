@@ -181,26 +181,27 @@ const Navbar = () => {
           </div>
         </div>
 
-        {/* Mobile Navigation Menu - full-screen overlay */}
+        {/* Mobile Navigation Menu - left dark drawer like reference design */}
         {isMobileMenuOpen && (
-          <div className="fixed inset-0 z-40 bg-slate-950/95 md:hidden">
-            <div className="flex h-full flex-col">
-              {/* Top row with brand and close button */}
-              <div className="flex items-center justify-between px-6 py-4 border-b border-slate-800">
-                <Link
-                  href="/"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="text-sm font-semibold tracking-wide text-slate-100"
-                >
-                  King Lemuel Properties
-                </Link>
+          <div className="fixed inset-0 z-40 md:hidden">
+            {/* Clickable backdrop on the right to close */}
+            <button
+              className="absolute inset-y-0 right-0 w-1/4 bg-transparent"
+              aria-label="Close menu"
+              onClick={toggleMobileMenu}
+            />
+
+            {/* Dark drawer */}
+            <div className="relative h-full w-3/4 max-w-xs bg-slate-950">
+              {/* Close pill in the top-right corner of the drawer */}
+              <div className="flex justify-end px-4 pt-5 pb-2">
                 <button
                   onClick={toggleMobileMenu}
                   aria-label="Close menu"
-                  className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-500 text-slate-100 hover:border-white hover:text-white transition-colors"
+                  className="inline-flex h-10 w-10 items-center justify-center rounded-full border-2 border-emerald-400 bg-slate-900 text-emerald-300 shadow-sm"
                 >
                   <svg
-                    className="h-4 w-4"
+                    className="h-5 w-5"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -216,7 +217,7 @@ const Navbar = () => {
               </div>
 
               {/* Menu items */}
-              <nav className="flex-1 px-6 py-6 space-y-5">
+              <nav className="px-6 py-4 space-y-6">
                 {navItems.map((item) => {
                   const isActive =
                     pathname === item.href ||
@@ -230,10 +231,8 @@ const Navbar = () => {
                       href={item.href}
                       onClick={() => setIsMobileMenuOpen(false)}
                       className={cn(
-                        'block text-lg font-medium tracking-wide',
-                        isActive
-                          ? 'text-white'
-                          : 'text-slate-300 hover:text-white'
+                        'block text-base font-medium',
+                        isActive ? 'text-white' : 'text-slate-100'
                       )}
                     >
                       {item.label}
@@ -242,19 +241,19 @@ const Navbar = () => {
                 })}
 
                 {/* Mobile Admin Login/Logout */}
-                <div className="mt-8 pt-6 border-t border-slate-800">
+                <div className="pt-4 space-y-2">
                   {adminStatus ? (
                     <button
                       onClick={handleLogout}
-                      className="w-full text-left text-base font-medium text-slate-300 hover:text-red-400 transition-colors"
+                      className="block w-full text-left text-base font-medium text-slate-100"
                     >
-                      Logout Admin
+                      Admin Logout
                     </button>
                   ) : (
                     <Link
                       href="/admin-login"
                       onClick={() => setIsMobileMenuOpen(false)}
-                      className="block text-base font-medium text-slate-300 hover:text-emerald-400 transition-colors"
+                      className="block text-base font-medium text-slate-100"
                     >
                       Admin Login
                     </Link>
