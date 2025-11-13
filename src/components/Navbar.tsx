@@ -181,7 +181,7 @@ const Navbar = () => {
           </div>
         </div>
 
-        {/* Mobile Navigation Menu - dropdown from top */}
+        {/* Mobile Navigation Menu - partial left drawer */}
         {isMobileMenuOpen && (
           <>
             {/* Background overlay */}
@@ -190,15 +190,15 @@ const Navbar = () => {
               onClick={toggleMobileMenu}
             />
             
-            {/* Dropdown panel */}
-            <div className="fixed top-16 left-0 right-0 bg-slate-950 shadow-2xl z-50 md:hidden animate-slide-down">
-              <div className="relative px-6 py-8 max-h-[70vh] overflow-y-auto">
-                {/* Close button */}
-                <div className="absolute top-4 right-4">
+            {/* Drawer panel */}
+            <div className="fixed inset-y-0 left-0 w-[70vw] max-w-xs bg-slate-950 shadow-2xl z-50 md:hidden animate-slide-left">
+              <div className="relative h-full px-6 py-8 flex flex-col">
+                {/* Close button (matches reference pill) */}
+                <div className="flex justify-end">
                   <button
                     onClick={toggleMobileMenu}
                     aria-label="Close menu"
-                    className="flex h-10 w-10 items-center justify-center rounded-full border border-emerald-400 bg-slate-900 text-emerald-200 hover:bg-slate-800 transition-colors"
+                    className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-emerald-400 bg-slate-900 text-emerald-200 shadow-sm"
                   >
                     <svg
                       className="h-5 w-5"
@@ -216,7 +216,7 @@ const Navbar = () => {
                   </button>
                 </div>
 
-                <nav className="space-y-6 pt-8">
+                <nav className="mt-10 space-y-6">
                   {navItems.map((item) => {
                     const isActive =
                       pathname === item.href ||
