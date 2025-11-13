@@ -181,50 +181,86 @@ const Navbar = () => {
           </div>
         </div>
 
-        {/* Mobile Navigation Menu */}
+        {/* Mobile Navigation Menu - full-screen overlay */}
         {isMobileMenuOpen && (
-          <div className="md:hidden bg-white/95 backdrop-blur-lg border-t border-gray-200 shadow-2xl">
-            <div className="px-4 py-4 space-y-1">
-              {navItems.map((item) => {
-                const isActive =
-                  pathname === item.href ||
-                  (item.href.startsWith('/properties') && pathname.startsWith('/properties')) ||
-                  (item.href === '/admin' && pathname.startsWith('/admin'))
-
-                return (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className={cn(
-                      'block py-2 text-sm border-b',
-                      getNavColorClasses(item.color, isActive)
-                    )}
+          <div className="fixed inset-0 z-40 bg-slate-950/95 md:hidden">
+            <div className="flex h-full flex-col">
+              {/* Top row with brand and close button */}
+              <div className="flex items-center justify-between px-6 py-4 border-b border-slate-800">
+                <Link
+                  href="/"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="text-sm font-semibold tracking-wide text-slate-100"
+                >
+                  King Lemuel Properties
+                </Link>
+                <button
+                  onClick={toggleMobileMenu}
+                  aria-label="Close menu"
+                  className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-500 text-slate-100 hover:border-white hover:text-white transition-colors"
+                >
+                  <svg
+                    className="h-4 w-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
                   >
-                    {item.label}
-                  </Link>
-                )
-              })}
-
-              {/* Mobile Admin Login/Logout */}
-              <div className="pt-2">
-                {adminStatus ? (
-                  <button
-                    onClick={handleLogout}
-                    className="w-full text-left py-2 text-sm text-gray-600 hover:text-red-600 border-b border-gray-100 hover:border-red-300 transition-colors"
-                  >
-                    Logout Admin
-                  </button>
-                ) : (
-                  <Link
-                    href="/admin-login"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="block py-2 text-sm text-gray-600 hover:text-green-600 border-b border-gray-100 hover:border-green-300 transition-colors"
-                  >
-                    Admin Login
-                  </Link>
-                )}
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
               </div>
+
+              {/* Menu items */}
+              <nav className="flex-1 px-6 py-6 space-y-5">
+                {navItems.map((item) => {
+                  const isActive =
+                    pathname === item.href ||
+                    (item.href.startsWith('/properties') &&
+                      pathname.startsWith('/properties')) ||
+                    (item.href === '/admin' && pathname.startsWith('/admin'))
+
+                  return (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className={cn(
+                        'block text-lg font-medium tracking-wide',
+                        isActive
+                          ? 'text-white'
+                          : 'text-slate-300 hover:text-white'
+                      )}
+                    >
+                      {item.label}
+                    </Link>
+                  )
+                })}
+
+                {/* Mobile Admin Login/Logout */}
+                <div className="mt-8 pt-6 border-t border-slate-800">
+                  {adminStatus ? (
+                    <button
+                      onClick={handleLogout}
+                      className="w-full text-left text-base font-medium text-slate-300 hover:text-red-400 transition-colors"
+                    >
+                      Logout Admin
+                    </button>
+                  ) : (
+                    <Link
+                      href="/admin-login"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="block text-base font-medium text-slate-300 hover:text-emerald-400 transition-colors"
+                    >
+                      Admin Login
+                    </Link>
+                  )}
+                </div>
+              </nav>
             </div>
           </div>
         )}
