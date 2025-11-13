@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState, useEffect } from 'react'
-import { Building2, Home, Key, Upload, Phone, Settings, LogIn, LogOut } from 'lucide-react'
+import { Building2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { isAdminLoggedIn, logoutAdmin } from '@/lib/auth'
 
@@ -43,72 +43,60 @@ const Navbar = () => {
   }
 
   const baseNavItems = [
-    { href: '/', label: 'Home', icon: Home, color: 'blue' },
-    { href: '/properties?type=land&purpose=buy', label: 'Buy Land', icon: Building2, color: 'green' },
-    { href: '/properties?type=house&purpose=rent', label: 'Houses for Rent', icon: Key, color: 'purple' },
-    { href: '/properties?type=house&purpose=buy', label: 'Houses for Sale', icon: Building2, color: 'orange' },
-    { href: '/contact', label: 'Contact', icon: Phone, color: 'red' },
+    { href: '/', label: 'Home', color: 'blue' },
+    { href: '/properties?type=land&purpose=buy', label: 'Buy Land', color: 'green' },
+    { href: '/properties?type=house&purpose=rent', label: 'Houses for Rent', color: 'purple' },
+    { href: '/properties?type=house&purpose=buy', label: 'Houses for Sale', color: 'orange' },
+    { href: '/contact', label: 'Contact', color: 'red' },
   ]
 
   const adminNavItems = [
-    { href: '/upload', label: 'Upload Property', icon: Upload, color: 'indigo' },
-    { href: '/admin', label: 'Admin', icon: Settings, color: 'gray' },
+    { href: '/upload', label: 'Upload Property', color: 'indigo' },
+    { href: '/admin', label: 'Admin', color: 'gray' },
   ]
 
   const navItems = adminStatus ? [...baseNavItems, ...adminNavItems] : baseNavItems
 
-  const getColorClasses = (color: string, isActive: boolean) => {
-    const colorMap = {
+  const getNavColorClasses = (color: string, isActive: boolean) => {
+    const colorMap: Record<
+      string,
+      {
+        active: string
+        inactive: string
+      }
+    > = {
       blue: {
-        active: 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg shadow-blue-200 border-2 border-blue-400',
-        hover: 'hover:bg-gradient-to-r hover:from-blue-400 hover:to-blue-500 hover:text-white hover:shadow-xl hover:shadow-blue-300 hover:scale-105',
-        icon: 'text-white',
-        inactive: 'text-gray-600 hover:text-blue-600'
+        active: 'text-blue-700 border-blue-700',
+        inactive: 'text-gray-600 border-transparent hover:text-blue-700 hover:border-blue-500',
       },
       green: {
-        active: 'bg-gradient-to-r from-green-500 to-green-600 text-white shadow-lg shadow-green-200 border-2 border-green-400',
-        hover: 'hover:bg-gradient-to-r hover:from-green-400 hover:to-green-500 hover:text-white hover:shadow-xl hover:shadow-green-300 hover:scale-105',
-        icon: 'text-white',
-        inactive: 'text-gray-600 hover:text-green-600'
+        active: 'text-green-700 border-green-700',
+        inactive: 'text-gray-600 border-transparent hover:text-green-700 hover:border-green-500',
       },
       purple: {
-        active: 'bg-gradient-to-r from-purple-500 to-purple-600 text-white shadow-lg shadow-purple-200 border-2 border-purple-400',
-        hover: 'hover:bg-gradient-to-r hover:from-purple-400 hover:to-purple-500 hover:text-white hover:shadow-xl hover:shadow-purple-300 hover:scale-105',
-        icon: 'text-white',
-        inactive: 'text-gray-600 hover:text-purple-600'
+        active: 'text-purple-700 border-purple-700',
+        inactive: 'text-gray-600 border-transparent hover:text-purple-700 hover:border-purple-500',
       },
       orange: {
-        active: 'bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-lg shadow-orange-200 border-2 border-orange-400',
-        hover: 'hover:bg-gradient-to-r hover:from-orange-400 hover:to-orange-500 hover:text-white hover:shadow-xl hover:shadow-orange-300 hover:scale-105',
-        icon: 'text-white',
-        inactive: 'text-gray-600 hover:text-orange-600'
+        active: 'text-orange-700 border-orange-700',
+        inactive: 'text-gray-600 border-transparent hover:text-orange-700 hover:border-orange-500',
       },
       red: {
-        active: 'bg-gradient-to-r from-red-500 to-red-600 text-white shadow-lg shadow-red-200 border-2 border-red-400',
-        hover: 'hover:bg-gradient-to-r hover:from-red-400 hover:to-red-500 hover:text-white hover:shadow-xl hover:shadow-red-300 hover:scale-105',
-        icon: 'text-white',
-        inactive: 'text-gray-600 hover:text-red-600'
+        active: 'text-red-700 border-red-700',
+        inactive: 'text-gray-600 border-transparent hover:text-red-700 hover:border-red-500',
       },
       indigo: {
-        active: 'bg-gradient-to-r from-indigo-500 to-indigo-600 text-white shadow-lg shadow-indigo-200 border-2 border-indigo-400',
-        hover: 'hover:bg-gradient-to-r hover:from-indigo-400 hover:to-indigo-500 hover:text-white hover:shadow-xl hover:shadow-indigo-300 hover:scale-105',
-        icon: 'text-white',
-        inactive: 'text-gray-600 hover:text-indigo-600'
+        active: 'text-indigo-700 border-indigo-700',
+        inactive: 'text-gray-600 border-transparent hover:text-indigo-700 hover:border-indigo-500',
       },
       gray: {
-        active: 'bg-gradient-to-r from-gray-500 to-gray-600 text-white shadow-lg shadow-gray-200 border-2 border-gray-400',
-        hover: 'hover:bg-gradient-to-r hover:from-gray-400 hover:to-gray-500 hover:text-white hover:shadow-xl hover:shadow-gray-300 hover:scale-105',
-        icon: 'text-white',
-        inactive: 'text-gray-600 hover:text-gray-600'
-      }
+        active: 'text-gray-900 border-gray-900',
+        inactive: 'text-gray-600 border-transparent hover:text-gray-900 hover:border-gray-500',
+      },
     }
 
-    const colors = colorMap[color as keyof typeof colorMap] || colorMap.blue
-    
-    return {
-      container: isActive ? colors.active : `bg-white/80 backdrop-blur-sm ${colors.hover} border-2 border-transparent`,
-      icon: isActive ? colors.icon : colors.inactive
-    }
+    const colors = colorMap[color] || colorMap.gray
+    return isActive ? colors.active : colors.inactive
   }
 
   return (
@@ -132,64 +120,39 @@ const Navbar = () => {
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
             {navItems.map((item) => {
-              const Icon = item.icon
-              const isActive = pathname === item.href || 
+              const isActive =
+                pathname === item.href ||
                 (item.href.startsWith('/properties') && pathname.startsWith('/properties')) ||
                 (item.href === '/admin' && pathname.startsWith('/admin'))
-              
-              const colorClasses = getColorClasses(item.color, isActive)
-              
+
               return (
                 <Link
                   key={item.href}
                   href={item.href}
                   className={cn(
-                    "group relative flex items-center space-x-2 px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-300 transform hover:scale-105 active:scale-95 overflow-hidden",
-                    colorClasses.container
+                    'text-sm font-medium transition-colors border-b-2',
+                    getNavColorClasses(item.color, isActive)
                   )}
                 >
-                  {/* Animated background effect */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-out" />
-                  
-                  <Icon className={cn("h-4 w-4 transition-all duration-300 group-hover:rotate-12", colorClasses.icon)} />
-                  <span className="relative transition-all duration-300 group-hover:translate-x-1">{item.label}</span>
-                  
-                  {/* Subtle glow effect for active state */}
-                  {isActive && (
-                    <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-white/10 to-transparent animate-pulse" />
-                  )}
+                  {item.label}
                 </Link>
               )
             })}
-            
+
             {/* Admin Login/Logout */}
             {adminStatus ? (
               <button
                 onClick={handleLogout}
-                className="group relative flex items-center space-x-2 px-3 py-1.5 rounded-lg text-xs font-medium bg-gradient-to-r from-red-500 to-red-600 text-white shadow-md shadow-red-200 border border-red-400 transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-red-300 active:scale-95 overflow-hidden"
+                className="ml-6 text-sm font-medium text-gray-600 hover:text-red-600 transition-colors border-b-2 border-transparent hover:border-red-400"
               >
-                {/* Animated background effect */}
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-out" />
-                
-                <LogOut className="h-4 w-4 transition-all duration-300 group-hover:rotate-12" />
-                <span className="relative transition-all duration-300 group-hover:translate-x-1">Logout Admin</span>
-                
-                {/* Pulse effect */}
-                <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-white/10 to-transparent animate-pulse" />
+                Logout Admin
               </button>
             ) : (
               <Link
                 href="/admin-login"
-                className="group relative flex items-center space-x-2 px-3 py-1.5 rounded-lg text-xs font-medium bg-gradient-to-r from-green-500 to-green-600 text-white shadow-md shadow-green-200 border border-green-400 transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-green-300 active:scale-95 overflow-hidden"
+                className="ml-6 text-sm font-medium text-gray-600 hover:text-green-600 transition-colors border-b-2 border-transparent hover:border-green-400"
               >
-                {/* Animated background effect */}
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-out" />
-                
-                <LogIn className="h-4 w-4 transition-all duration-300 group-hover:rotate-12" />
-                <span className="relative transition-all duration-300 group-hover:translate-x-1">Admin Login</span>
-                
-                {/* Pulse effect */}
-                <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-white/10 to-transparent animate-pulse" />
+                Admin Login
               </Link>
             )}
           </div>
@@ -220,71 +183,45 @@ const Navbar = () => {
 
         {/* Mobile Navigation Menu */}
         {isMobileMenuOpen && (
-          <div className="md:hidden bg-white/95 backdrop-blur-lg border-t border-gray-200 shadow-2xl animate-slide-down">
-            <div className="px-4 py-4 space-y-2">
-              {navItems.map((item, index) => {
-                const Icon = item.icon
-                const isActive = pathname === item.href || 
+          <div className="md:hidden bg-white/95 backdrop-blur-lg border-t border-gray-200 shadow-2xl">
+            <div className="px-4 py-4 space-y-1">
+              {navItems.map((item) => {
+                const isActive =
+                  pathname === item.href ||
                   (item.href.startsWith('/properties') && pathname.startsWith('/properties')) ||
                   (item.href === '/admin' && pathname.startsWith('/admin'))
-                
-                const colorClasses = getColorClasses(item.color, isActive)
-                
+
                 return (
                   <Link
                     key={item.href}
                     href={item.href}
                     onClick={() => setIsMobileMenuOpen(false)}
                     className={cn(
-                      "group relative flex items-center space-x-3 px-3 py-2 rounded-lg text-xs font-medium transition-all duration-300 transform hover:scale-105 active:scale-95 overflow-hidden",
-                      colorClasses.container
+                      'block py-2 text-sm border-b',
+                      getNavColorClasses(item.color, isActive)
                     )}
-                    style={{ animationDelay: `${index * 50}ms` }}
                   >
-                    {/* Animated background effect */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-out" />
-                    
-                    <Icon className={cn("h-4 w-4 transition-all duration-300 group-hover:rotate-12", colorClasses.icon)} />
-                    <span className="relative transition-all duration-300 group-hover:translate-x-1">{item.label}</span>
-                    
-                    {/* Subtle glow effect for active state */}
-                    {isActive && (
-                      <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-white/10 to-transparent animate-pulse" />
-                    )}
+                    {item.label}
                   </Link>
                 )
               })}
-              
+
               {/* Mobile Admin Login/Logout */}
-              <div className="border-t border-gray-200 pt-3 mt-3">
+              <div className="pt-2">
                 {adminStatus ? (
                   <button
                     onClick={handleLogout}
-                    className="group relative flex items-center space-x-3 px-3 py-2 rounded-lg text-xs font-medium bg-gradient-to-r from-red-500 to-red-600 text-white shadow-md shadow-red-200 border border-red-400 transition-all duration-300 transform hover:scale-105 active:scale-95 w-full text-left overflow-hidden"
+                    className="w-full text-left py-2 text-sm text-gray-600 hover:text-red-600 border-b border-gray-100 hover:border-red-300 transition-colors"
                   >
-                    {/* Animated background effect */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-out" />
-                    
-                    <LogOut className="h-4 w-4 transition-all duration-300 group-hover:rotate-12" />
-                    <span className="relative transition-all duration-300 group-hover:translate-x-1">Logout Admin</span>
-                    
-                    {/* Pulse effect */}
-                    <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-white/10 to-transparent animate-pulse" />
+                    Logout Admin
                   </button>
                 ) : (
                   <Link
                     href="/admin-login"
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className="group relative flex items-center space-x-3 px-3 py-2 rounded-lg text-xs font-medium bg-gradient-to-r from-green-500 to-green-600 text-white shadow-md shadow-green-200 border border-green-400 transition-all duration-300 transform hover:scale-105 active:scale-95 overflow-hidden"
+                    className="block py-2 text-sm text-gray-600 hover:text-green-600 border-b border-gray-100 hover:border-green-300 transition-colors"
                   >
-                    {/* Animated background effect */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-out" />
-                    
-                    <LogIn className="h-4 w-4 transition-all duration-300 group-hover:rotate-12" />
-                    <span className="relative transition-all duration-300 group-hover:translate-x-1">Admin Login</span>
-                    
-                    {/* Pulse effect */}
-                    <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-white/10 to-transparent animate-pulse" />
+                    Admin Login
                   </Link>
                 )}
               </div>

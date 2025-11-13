@@ -87,7 +87,7 @@ export default function HomePage() {
     <div className="min-h-screen">
       {/* Top Search Bar (sticky, like Google) */}
       <div className="sticky top-0 z-30 bg-white/70 backdrop-blur-md border-b border-white/60">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
           <div className="max-w-5xl mx-auto">
             <SearchBar />
           </div>

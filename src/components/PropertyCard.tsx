@@ -25,6 +25,10 @@ const PropertyCard = ({ property, onDelete, showDelete = false }: PropertyCardPr
       : 'bg-blue-100 text-blue-800'
   }
 
+  const getPurposeLabel = (purpose: string) => {
+    return purpose === 'buy' ? 'FOR SALE' : 'FOR RENT'
+  }
+
   const getPropertyTypeIcon = (type: string) => {
     return type === 'land' ? '🏞️' : '🏠'
   }
@@ -47,7 +51,7 @@ const PropertyCard = ({ property, onDelete, showDelete = false }: PropertyCardPr
         {/* Top badges */}
         <div className="absolute top-3 left-3">
           <span className={`px-2 py-1 rounded-full text-xs font-medium ${getPurposeColor(property.purpose)}`}>
-            {property.purpose.toUpperCase()}
+            {getPurposeLabel(property.purpose)}
           </span>
           {property.promotionPrice != null && (
             <span className="ml-2 px-2 py-1 rounded-full text-[10px] font-semibold bg-red-100 text-red-700">
