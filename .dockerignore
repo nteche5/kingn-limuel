@@ -1,0 +1,14 @@
+node_modules
+npm-debug.log
+.next
+.git
+.gitignore
+Dockerfile
+Dockerfile.*
+docker-compose*.yml
+.env*
+*.local
+**/*.swp
+**/*.swo
+
+

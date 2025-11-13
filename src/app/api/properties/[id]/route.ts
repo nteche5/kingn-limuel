@@ -9,6 +9,7 @@ function mapDbRowToProperty(row: any, ownershipDocs?: any[]) {
     title: row.title,
     location: row.location,
     price: Number(row.price),
+    promotionPrice: row.promotion_price != null ? Number(row.promotion_price) : undefined,
     propertyType: row.property_type,
     purpose: row.purpose,
     description: row.description,

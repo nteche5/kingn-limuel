@@ -17,6 +17,7 @@ export interface Property {
   title: string;
   location: string;
   price: number;
+  promotionPrice?: number;
   propertyType: 'land' | 'house';
   purpose: 'buy' | 'rent';
   description: string;

@@ -1,0 +1,23 @@
+FROM node:20-bookworm
+
+WORKDIR /app
+
+# Install dependencies separately to leverage Docker cache
+COPY package.json package-lock.json* ./
+RUN npm ci || npm install
+
+# Copy the rest of the app
+COPY . .
+
+# Ensure dev server binds to all interfaces
+ENV HOST=0.0.0.0
+ENV CHOKIDAR_USEPOLLING=true
+ENV WATCHPACK_POLLING=true
+# Try SWC WASM to avoid native crashes in some environments
+ENV SWC_USE_WASM=1
+
+EXPOSE 3000
+
+CMD ["npm", "run", "dev", "--", "-H", "0.0.0.0"]
+
+

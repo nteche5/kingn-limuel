@@ -9,6 +9,7 @@ function mapDbRowToProperty(row: any, ownershipDocs?: any[]) {
     title: row.title,
     location: row.location,
     price: Number(row.price),
+    promotionPrice: row.promotion_price != null ? Number(row.promotion_price) : undefined,
     propertyType: row.property_type,
     purpose: row.purpose,
     description: row.description,
@@ -63,7 +64,7 @@ export async function POST(req: NextRequest) {
 
     const body = await req.json()
     // Expecting camelCase from client
-    const insertPayload: any = {
+  const insertPayload: any = {
       title: body.title,
       location: body.location,
       price: body.price,
@@ -78,13 +79,27 @@ export async function POST(req: NextRequest) {
       featured: !!body.featured,
       is_active: true,
     }
+  if (body.promotionPrice != null) {
+    insertPayload.promotion_price = body.promotionPrice
+  }
 
-    const { data: inserted, error } = await supabaseAdmin
+    let inserted: any | null = null
+    let error: any | null = null
+    ;({ data: inserted, error } = await supabaseAdmin
       .from('properties')
       .insert(insertPayload)
       .select('*, ownership_documents (*)')
-      .single()
-
+      .single())
+    if (error && insertPayload.promotion_price !== undefined && /promotion_price/.test(error.message || '')) {
+      // Retry without promotion_price if column doesn't exist yet
+      const retryPayload = { ...insertPayload }
+      delete retryPayload.promotion_price
+      ;({ data: inserted, error } = await supabaseAdmin
+        .from('properties')
+        .insert(retryPayload)
+        .select('*, ownership_documents (*)')
+        .single())
+    }
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 })
     }

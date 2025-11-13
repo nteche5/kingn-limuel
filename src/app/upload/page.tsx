@@ -22,12 +22,13 @@ import {
   AlertCircle,
   Trash2
 } from 'lucide-react'
-import { LOCATION_OPTIONS } from '@/types'
+// LOCATION_OPTIONS no longer used for free-text location input
 
 interface PropertyFormData {
   title: string
   location: string
   price: string
+  promotionPrice?: string
   propertyType: 'land' | 'house'
   purpose: 'buy' | 'rent'
   description: string
@@ -50,14 +51,40 @@ export default function UploadPropertyPage() {
     }
     setIsAuthorized(true)
   }, [router])
+  // Load unique locations for suggestions
+  useEffect(() => {
+    const loadLocations = async () => {
+      try {
+        const res = await fetch('/api/properties', { cache: 'no-store' })
+        if (!res.ok) return
+        const json = await res.json()
+        const unique = Array.from(
+          new Set<string>(
+            (json?.properties || [])
+              .map((p: any) => (p?.location || '').toString().trim())
+              .filter((x: string) => x.length > 0)
+          )
+        ).sort((a, b) => a.localeCompare(b))
+        setAllLocations(unique)
+        setLocSuggestions(unique.slice(0, 8))
+      } catch {
+        // ignore
+      }
+    }
+    loadLocations()
+  }, [])
   const [images, setImages] = useState<UploadedFile[]>([])
   const [video, setVideo] = useState<UploadedFile[]>([])
   const [landTitleCertification, setLandTitleCertification] = useState<UploadedFile[]>([])
   const [additionalDocuments, setAdditionalDocuments] = useState<UploadedFile[]>([])
+  const [allLocations, setAllLocations] = useState<string[]>([])
+  const [showLocSuggestions, setShowLocSuggestions] = useState(false)
+  const [locSuggestions, setLocSuggestions] = useState<string[]>([])
   const [formData, setFormData] = useState<PropertyFormData>({
     title: '',
     location: '',
     price: '',
+    promotionPrice: '',
     propertyType: 'land',
     purpose: 'buy',
     description: '',
@@ -80,6 +107,7 @@ export default function UploadPropertyPage() {
       title: '',
       location: '',
       price: '',
+      promotionPrice: '',
       propertyType: 'land',
       purpose: 'buy',
       description: '',
@@ -139,7 +167,7 @@ export default function UploadPropertyPage() {
     setSubmitStatus('idle')
 
     try {
-      // Helper to upload a single file
+      // Helper to upload a single file (server API)
       const uploadViaApi = async (file: File, folder: string): Promise<string> => {
         const fd = new FormData()
         fd.append('file', file)
@@ -152,6 +180,7 @@ export default function UploadPropertyPage() {
         return json.file.url as string
       }
 
+      // Helper to upload a single file (signed URL)
       const uploadViaSignedUrl = async (file: File, folder: string): Promise<string> => {
         const res = await fetch('/api/storage/signed-upload', {
           method: 'POST',
@@ -163,32 +192,59 @@ export default function UploadPropertyPage() {
           throw new Error(json?.error || 'Failed to get signed URL')
         }
 
-        const uploadRes = await fetch(json.token, {
-          method: 'PUT',
-          headers: { 'Content-Type': file.type || 'application/octet-stream' },
-          body: file
-        })
-        if (!uploadRes.ok) {
-          throw new Error('Failed to upload via signed URL')
+        // Use Supabase client helper to upload with token
+        const { supabase } = await import('@/lib/supabase')
+        const { error: signedErr } = await supabase.storage
+          .from('property-files')
+          .uploadToSignedUrl(json.path, json.token, file, {
+            contentType: file.type || 'application/octet-stream'
+          } as any)
+        if (signedErr) {
+          throw new Error(signedErr.message || 'Failed to upload via signed URL')
         }
 
-        // Get public URL
-        const { supabase } = await import('@/lib/supabase')
+        // Get public URL after successful upload
         const { data } = supabase.storage.from('property-files').getPublicUrl(json.path)
         return data.publicUrl
       }
 
+      // Simple retry wrapper with exponential backoff
+      const withRetry = async <T,>(fn: () => Promise<T>, attempts: number = 3, baseDelayMs: number = 400): Promise<T> => {
+        let lastErr: any
+        for (let i = 0; i < attempts; i++) {
+          try {
+            return await fn()
+          } catch (err) {
+            lastErr = err
+            await new Promise(r => setTimeout(r, baseDelayMs * Math.pow(2, i)))
+          }
+        }
+        throw lastErr
+      }
+
+      // Prefer signed uploads for reliability; fallback to API
+      const uploadWithSignedPrefer = async (file: File, folder: string): Promise<string> => {
+        try {
+          return await withRetry(() => uploadViaSignedUrl(file, folder))
+        } catch {
+          // fallback to API route (also retried)
+          return await withRetry(() => uploadViaApi(file, folder))
+        }
+      }
+
       // Upload images
-      const imageUrls = await Promise.all(images.map(f => uploadViaApi(f.file, 'properties/images')))
+      const imageUrls = await Promise.all(
+        images.map(f => uploadWithSignedPrefer(f.file, 'properties/images'))
+      )
       if (imageUrls.length === 0) throw new Error('Image upload failed. Please try again.')
 
       // Optional video - try signed URL (best for mobile), fallback to API
       let videoUrl: string | undefined
       if (video[0]) {
         try {
-          videoUrl = await uploadViaSignedUrl(video[0].file, 'properties/videos')
+          videoUrl = await withRetry(() => uploadViaSignedUrl(video[0].file, 'properties/videos'))
         } catch {
-          videoUrl = await uploadViaApi(video[0].file, 'properties/videos')
+          videoUrl = await withRetry(() => uploadViaApi(video[0].file, 'properties/videos'))
         }
       }
 
@@ -196,7 +252,7 @@ export default function UploadPropertyPage() {
       let landTitleUrl: string | undefined
       if (landTitleCertification[0]) {
         try {
-          landTitleUrl = await uploadViaApi(landTitleCertification[0].file, 'properties/documents')
+          landTitleUrl = await uploadWithSignedPrefer(landTitleCertification[0].file, 'properties/documents')
         } catch {
           landTitleUrl = undefined
         }
@@ -206,12 +262,7 @@ export default function UploadPropertyPage() {
       const additionalDocsResults = await Promise.all(
         additionalDocuments.map(async (doc) => {
           try {
-            let url: string
-            try {
-              url = await uploadViaSignedUrl(doc.file, 'properties/documents')
-            } catch {
-              url = await uploadViaApi(doc.file, 'properties/documents')
-            }
+            const url = await uploadWithSignedPrefer(doc.file, 'properties/documents')
             return {
               name: doc.file.name,
               url,
@@ -226,10 +277,15 @@ export default function UploadPropertyPage() {
       const additionalDocs = additionalDocsResults.filter(Boolean) as NonNullable<typeof additionalDocsResults[number]>[]
 
       // Create property object to persist in Supabase via API
-      const propertyData: Omit<Property, 'id' | 'createdAt'> = {
+      const promo =
+        formData.promotionPrice && formData.promotionPrice.trim() !== ''
+          ? parseFloat(formData.promotionPrice)
+          : undefined
+      const propertyData: Omit<Property, 'id' | 'createdAt'> & { promotionPrice?: number } = {
         title: formData.title,
         location: formData.location,
         price: parseFloat(formData.price),
+        promotionPrice: promo,
         propertyType: formData.propertyType,
         purpose: formData.purpose,
         description: formData.description,
@@ -352,23 +408,46 @@ export default function UploadPropertyPage() {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
+                <div className="relative">
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    General Location *
+                    Location *
                   </label>
-                  <select
+                  <Input
                     value={formData.location}
-                    onChange={(e) => handleInputChange('location', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                    onChange={(e) => {
+                      const v = e.target.value
+                      handleInputChange('location', v)
+                      const q = v.trim().toLowerCase()
+                      if (!q) {
+                        setLocSuggestions(allLocations.slice(0, 8))
+                      } else {
+                        setLocSuggestions(
+                          allLocations.filter(l => l.toLowerCase().includes(q)).slice(0, 8)
+                        )
+                      }
+                    }}
+                    onFocus={() => setShowLocSuggestions(true)}
+                    onBlur={() => setTimeout(() => setShowLocSuggestions(false), 120)}
+                    placeholder="e.g., Tamale, Sagnarigu, Accra"
                     required
-                  >
-                    <option value="">Select General Location</option>
-                    {LOCATION_OPTIONS.map((option) => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
+                  />
+                  {showLocSuggestions && locSuggestions.length > 0 && (
+                    <div className="absolute z-20 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-56 overflow-auto">
+                      {locSuggestions.map((loc) => (
+                        <div
+                          key={loc}
+                          className="px-4 py-2 text-sm cursor-pointer hover:bg-primary-50 text-gray-900"
+                          onMouseDown={(e) => e.preventDefault()}
+                          onClick={() => {
+                            handleInputChange('location', loc)
+                            setShowLocSuggestions(false)
+                          }}
+                        >
+                          {loc}
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
 
                 <div>
@@ -381,6 +460,17 @@ export default function UploadPropertyPage() {
                     onChange={(e) => handleInputChange('price', e.target.value)}
                     placeholder="Enter price"
                     required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Promotion Price (GHS) (optional)
+                  </label>
+                  <Input
+                    type="number"
+                    value={formData.promotionPrice || ''}
+                    onChange={(e) => handleInputChange('promotionPrice', e.target.value)}
+                    placeholder="Enter promotion price (optional)"
                   />
                 </div>
               </div>

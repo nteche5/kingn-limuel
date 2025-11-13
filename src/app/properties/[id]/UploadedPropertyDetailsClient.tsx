@@ -174,7 +174,20 @@ export default function UploadedPropertyDetailsClient({ id }: UploadedPropertyDe
         <div className="space-y-6">
           <Card>
             <CardContent className="p-6 space-y-2">
-              <div className="text-3xl font-bold text-primary-600">{formatPrice(property.price)}</div>
+              <div>
+                <div
+                  className={`text-3xl font-bold ${
+                    property.promotionPrice != null
+                      ? 'text-gray-500 line-through decoration-2 decoration-red-600'
+                      : 'text-primary-600'
+                  }`}
+                >
+                  {formatPrice(property.price)}
+                </div>
+                {property.promotionPrice != null && (
+                  <div className="text-xs text-gray-600 mt-1">Promo: {formatPrice(property.promotionPrice)}</div>
+                )}
+              </div>
               <div className="text-gray-600 capitalize">
                 {property.propertyType} for {property.purpose}
               </div>

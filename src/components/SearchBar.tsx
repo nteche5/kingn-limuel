@@ -4,7 +4,6 @@ import { useState, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { Search, MapPin, Building2, Target, ChevronDown } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
-import { LOCATION_OPTIONS } from '@/types'
 
 interface SearchFilters {
   location: string
@@ -19,6 +18,9 @@ const SearchBar = () => {
     propertyType: '',
     purpose: ''
   })
+  const [allLocations, setAllLocations] = useState<string[]>([])
+  const [showLocSuggestions, setShowLocSuggestions] = useState(false)
+  const [locSuggestions, setLocSuggestions] = useState<string[]>([])
   const [openDropdown, setOpenDropdown] = useState<string | null>(null)
   const dropdownRefs = {
     location: useRef<HTMLDivElement>(null),
@@ -42,6 +44,16 @@ const SearchBar = () => {
       [field]: value
     }))
     setOpenDropdown(null)
+    if (field === 'location') {
+      const q = value.trim().toLowerCase()
+      if (!q) {
+        setLocSuggestions(allLocations.slice(0, 8))
+      } else {
+        setLocSuggestions(
+          allLocations.filter(l => l.toLowerCase().includes(q)).slice(0, 8)
+        )
+      }
+    }
   }
 
   const toggleDropdown = (dropdown: string) => {
@@ -78,16 +90,35 @@ const SearchBar = () => {
     }
   }, [openDropdown])
 
-  const getDisplayValue = (field: keyof SearchFilters) => {
+  // Helper to display labels for non-location fields
+  const getDisplayValue = (field: 'propertyType' | 'purpose') => {
     const value = filters[field]
-    if (!value) return field === 'location' ? 'Location' : field === 'propertyType' ? 'Type' : 'Purpose'
-    
-    if (field === 'location') {
-      const option = LOCATION_OPTIONS.find(opt => opt.value === value)
-      return option?.label || value
-    }
+    if (!value) return field === 'propertyType' ? 'Type' : 'Purpose'
     return value.charAt(0).toUpperCase() + value.slice(1)
   }
+
+  // Load unique locations from API for suggestions
+  useEffect(() => {
+    const loadLocations = async () => {
+      try {
+        const res = await fetch('/api/properties', { cache: 'no-store' })
+        if (!res.ok) return
+        const json = await res.json()
+        const unique = Array.from(
+          new Set<string>(
+            (json?.properties || [])
+              .map((p: any) => (p?.location || '').toString().trim())
+              .filter((x: string) => x.length > 0)
+          )
+        ).sort((a, b) => a.localeCompare(b))
+        setAllLocations(unique)
+        setLocSuggestions(unique.slice(0, 8))
+      } catch {
+        // ignore
+      }
+    }
+    loadLocations()
+  }, [])
 
   return (
     <div className="bg-white/80 backdrop-blur-md border border-white/60 shadow-lg p-0.5 sm:p-3 rounded-full max-w-5xl mx-auto">
@@ -96,37 +127,29 @@ const SearchBar = () => {
         <div className="relative flex-1 min-w-[120px] sm:flex-1" ref={dropdownRefs.location}>
           <div className="relative">
             <MapPin className="absolute left-2 sm:left-3 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 sm:h-5 sm:w-5 text-gray-400 z-10" />
-            <button
-              type="button"
-              aria-label="Select location"
-              onClick={() => toggleDropdown('location')}
-              className="w-full h-8 sm:h-12 pl-7 sm:pl-10 pr-5 sm:pr-8 rounded-full bg-transparent hover:bg-white/60 border-0 text-left flex items-center justify-between text-[11px] sm:text-base focus-visible:ring-2 focus-visible:ring-primary-500"
-            >
-              <span className={`${filters.location ? 'text-gray-900' : 'text-gray-500'} truncate max-w-[75%]`}>
-                {getDisplayValue('location')}
-              </span>
-              <ChevronDown className={`h-3.5 w-3.5 sm:h-4 sm:w-4 text-gray-400 transition-transform ${openDropdown === 'location' ? 'rotate-180' : ''}`} />
-            </button>
-            {openDropdown === 'location' && (
-              <div 
-                className="absolute z-20 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto"
-                onMouseDown={handleDropdownMouseDown}
-              >
-                <div
-                  className="px-4 py-3 text-primary-600 cursor-pointer hover:bg-primary-50"
-                  onClick={() => handleInputChange('location', '')}
-                >
-                  Select Location
-                </div>
-                {LOCATION_OPTIONS.map((option) => (
+            <input
+              type="text"
+              value={filters.location}
+              onChange={(e) => handleInputChange('location', e.target.value)}
+              onFocus={() => setShowLocSuggestions(true)}
+              onBlur={() => setTimeout(() => setShowLocSuggestions(false), 100)}
+              placeholder="Location"
+              className="w-full h-8 sm:h-12 pl-7 sm:pl-10 pr-5 sm:pr-8 rounded-full bg-white/90 hover:bg-white border border-gray-200 text-left text-[11px] sm:text-base text-gray-900 placeholder-gray-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
+              aria-label="Location"
+            />
+            {showLocSuggestions && locSuggestions.length > 0 && (
+              <div className="absolute z-20 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-56 overflow-auto">
+                {locSuggestions.map((loc) => (
                   <div
-                    key={option.value}
-                    className={`px-4 py-3 cursor-pointer hover:bg-primary-50 ${
-                      filters.location === option.value ? 'bg-primary-100 text-primary-700' : 'text-gray-900'
-                    }`}
-                    onClick={() => handleInputChange('location', option.value)}
+                    key={loc}
+                    className="px-4 py-2 text-sm cursor-pointer hover:bg-primary-50 text-gray-900"
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={() => {
+                      setFilters(prev => ({ ...prev, location: loc }))
+                      setShowLocSuggestions(false)
+                    }}
                   >
-                    {option.label}
+                    {loc}
                   </div>
                 ))}
               </div>

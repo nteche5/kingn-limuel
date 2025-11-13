@@ -42,6 +42,7 @@ export const adminCreateProperty = async (propertyData: CreatePropertyData): Pro
         title: propertyData.title,
         location: propertyData.location,
         price: propertyData.price,
+        promotion_price: propertyData.promotionPrice ?? null,
         property_type: propertyData.propertyType,
         purpose: propertyData.purpose,
         description: propertyData.description,
@@ -92,6 +93,7 @@ export const adminUpdateProperty = async (id: string, propertyData: Partial<Crea
     if (propertyData.title !== undefined) updateData.title = propertyData.title
     if (propertyData.location !== undefined) updateData.location = propertyData.location
     if (propertyData.price !== undefined) updateData.price = propertyData.price
+    if (propertyData.promotionPrice !== undefined) updateData.promotion_price = propertyData.promotionPrice
     if (propertyData.propertyType !== undefined) updateData.property_type = propertyData.propertyType
     if (propertyData.purpose !== undefined) updateData.purpose = propertyData.purpose
     if (propertyData.description !== undefined) updateData.description = propertyData.description

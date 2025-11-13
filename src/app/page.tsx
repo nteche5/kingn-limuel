@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import SearchBar from '@/components/SearchBar'
 import PropertyCard from '@/components/PropertyCard'
+import { motion } from 'framer-motion'
 import BackgroundSlideshow from '@/components/BackgroundSlideshow'
 import { Property } from '@/types'
 import { getAllProperties } from '@/lib/propertyManager'
@@ -84,6 +85,15 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen">
+      {/* Top Search Bar (sticky, like Google) */}
+      <div className="sticky top-0 z-30 bg-white/70 backdrop-blur-md border-b border-white/60">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+          <div className="max-w-5xl mx-auto">
+            <SearchBar />
+          </div>
+        </div>
+      </div>
+
       {/* Hero Section with Background Slideshow */}
       <BackgroundSlideshow 
         images={backgroundImages}
@@ -103,10 +113,7 @@ export default function HomePage() {
                  </p>
                </div>
           
-          {/* AI Search Bar */}
-          <div className="mt-12 animate-slide-up">
-            <SearchBar />
-          </div>
+          {/* Removed in-hero SearchBar; moved to sticky top */}
           
                {/* Trust indicators */}
                <div className="mt-8 sm:mt-12 md:mt-16 grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 md:gap-8 max-w-4xl mx-auto">
@@ -178,8 +185,16 @@ export default function HomePage() {
             </div>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
-              {featuredProperties.map((property) => (
-                <PropertyCard key={property.id} property={property} />
+              {featuredProperties.map((property, idx) => (
+                <motion.div
+                  key={property.id}
+                  initial={{ opacity: 0, y: 16 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.2 }}
+                  transition={{ duration: 0.35, ease: 'easeOut', delay: Math.min(idx * 0.05, 0.4) }}
+                >
+                  <PropertyCard property={property} />
+                </motion.div>
               ))}
             </div>
           </div>
@@ -205,8 +220,16 @@ export default function HomePage() {
             </div>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
-              {landsForSale.map((property) => (
-                <PropertyCard key={property.id} property={property} />
+              {landsForSale.map((property, idx) => (
+                <motion.div
+                  key={property.id}
+                  initial={{ opacity: 0, y: 16 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.2 }}
+                  transition={{ duration: 0.35, ease: 'easeOut', delay: Math.min(idx * 0.05, 0.4) }}
+                >
+                  <PropertyCard property={property} />
+                </motion.div>
               ))}
             </div>
           </div>
@@ -232,8 +255,16 @@ export default function HomePage() {
             </div>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
-              {housesForRent.map((property) => (
-                <PropertyCard key={property.id} property={property} />
+              {housesForRent.map((property, idx) => (
+                <motion.div
+                  key={property.id}
+                  initial={{ opacity: 0, y: 16 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.2 }}
+                  transition={{ duration: 0.35, ease: 'easeOut', delay: Math.min(idx * 0.05, 0.4) }}
+                >
+                  <PropertyCard property={property} />
+                </motion.div>
               ))}
             </div>
           </div>
@@ -259,8 +290,16 @@ export default function HomePage() {
             </div>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
-              {housesForSale.map((property) => (
-                <PropertyCard key={property.id} property={property} />
+              {housesForSale.map((property, idx) => (
+                <motion.div
+                  key={property.id}
+                  initial={{ opacity: 0, y: 16 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.2 }}
+                  transition={{ duration: 0.35, ease: 'easeOut', delay: Math.min(idx * 0.05, 0.4) }}
+                >
+                  <PropertyCard property={property} />
+                </motion.div>
               ))}
             </div>
           </div>

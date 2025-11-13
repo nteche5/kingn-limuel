@@ -15,6 +15,7 @@ export interface CreatePropertyData {
   title: string
   location: string
   price: number
+  promotionPrice?: number
   propertyType: 'land' | 'house'
   purpose: 'buy' | 'rent'
   description: string
@@ -194,7 +195,7 @@ export const createProperty = async (propertyData: CreatePropertyData): Promise<
         contact: propertyData.contact || { name: '', phone: '', email: '' },
         uploaded_by: 'admin',
         featured: propertyData.featured || false
-      })
+      } as any)
       .select()
       .single()
 
@@ -236,6 +237,7 @@ export const updateProperty = async (id: string, propertyData: Partial<CreatePro
     if (propertyData.title !== undefined) updateData.title = propertyData.title
     if (propertyData.location !== undefined) updateData.location = propertyData.location
     if (propertyData.price !== undefined) updateData.price = propertyData.price
+    if (propertyData.promotionPrice !== undefined) updateData.promotion_price = propertyData.promotionPrice
     if (propertyData.propertyType !== undefined) updateData.property_type = propertyData.propertyType
     if (propertyData.purpose !== undefined) updateData.purpose = propertyData.purpose
     if (propertyData.description !== undefined) updateData.description = propertyData.description
@@ -244,6 +246,7 @@ export const updateProperty = async (id: string, propertyData: Partial<CreatePro
     if (propertyData.proofDocument !== undefined) updateData.proof_document = propertyData.proofDocument
     if (propertyData.contact !== undefined) updateData.contact = propertyData.contact
     if (propertyData.featured !== undefined) updateData.featured = propertyData.featured
+    if (propertyData.promotionPrice !== undefined) updateData.promotion_price = propertyData.promotionPrice
 
     const { data: property, error } = await supabase
       .from('properties')
