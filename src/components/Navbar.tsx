@@ -181,25 +181,25 @@ const Navbar = () => {
           </div>
         </div>
 
-        {/* Mobile Navigation Menu - left dark drawer like reference design */}
+        {/* Mobile Navigation Menu - partial right-slide drawer */}
         {isMobileMenuOpen && (
-          <div className="fixed inset-0 z-40 md:hidden">
-            {/* Clickable backdrop on the right to close */}
+          <div className="fixed inset-0 z-40 flex md:hidden">
+            {/* Left transparent overlay to close */}
             <button
-              className="absolute inset-y-0 right-0 w-1/4 bg-transparent"
+              className="flex-1 bg-black/40"
               aria-label="Close menu"
               onClick={toggleMobileMenu}
             />
 
-            {/* Dark drawer */}
-            <div className="relative h-full w-3/4 max-w-xs bg-slate-950">
-              {/* Close pill in the top-right corner of the drawer */}
-              <div className="flex justify-end px-4 pt-5 pb-2">
+            {/* Right drawer */}
+            <div className="relative h-full w-3/5 min-w-[48vw] max-w-[260px] bg-slate-950 shadow-2xl">
+              <div className="flex justify-end px-4 pt-4">
                 <button
                   onClick={toggleMobileMenu}
                   aria-label="Close menu"
-                  className="inline-flex h-10 w-10 items-center justify-center rounded-full border-2 border-emerald-400 bg-slate-900 text-emerald-300 shadow-sm"
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-emerald-400 text-emerald-200"
                 >
+                  <span className="sr-only">Close</span>
                   <svg
                     className="h-5 w-5"
                     fill="none"
@@ -216,8 +216,7 @@ const Navbar = () => {
                 </button>
               </div>
 
-              {/* Menu items */}
-              <nav className="px-6 py-4 space-y-6">
+              <nav className="px-6 py-6 space-y-6">
                 {navItems.map((item) => {
                   const isActive =
                     pathname === item.href ||
@@ -231,8 +230,8 @@ const Navbar = () => {
                       href={item.href}
                       onClick={() => setIsMobileMenuOpen(false)}
                       className={cn(
-                        'block text-base font-medium',
-                        isActive ? 'text-white' : 'text-slate-100'
+                        'block text-lg font-medium transition-colors',
+                        isActive ? 'text-white' : 'text-slate-100 hover:text-white'
                       )}
                     >
                       {item.label}
@@ -240,12 +239,11 @@ const Navbar = () => {
                   )
                 })}
 
-                {/* Mobile Admin Login/Logout */}
-                <div className="pt-4 space-y-2">
+                <div className="mt-6 border-t border-white/20 pt-6 space-y-2">
                   {adminStatus ? (
                     <button
                       onClick={handleLogout}
-                      className="block w-full text-left text-base font-medium text-slate-100"
+                      className="w-full text-left text-base font-medium text-slate-100"
                     >
                       Admin Logout
                     </button>
