@@ -175,7 +175,7 @@ export default function HomePage() {
                 <div className="p-3 rounded-full bg-blue-100 mr-4">
                   <Building2 className="h-8 w-8 text-blue-600" />
                 </div>
-                <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">
+                <h2 className="text-xl sm:text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight">
                   Featured Properties
                 </h2>
               </div>
@@ -210,7 +210,7 @@ export default function HomePage() {
                 <div className="p-3 rounded-full bg-green-100 mr-4">
                   <Building2 className="h-8 w-8 text-green-600" />
                 </div>
-                <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">
+                <h2 className="text-xl sm:text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight">
                   Lands for Sale
                 </h2>
               </div>
@@ -245,7 +245,7 @@ export default function HomePage() {
                 <div className="p-3 rounded-full bg-purple-100 mr-4">
                   <DoorOpen className="h-8 w-8 text-purple-600" />
                 </div>
-                <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">
+                <h2 className="text-xl sm:text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight">
                   Houses for Rent
                 </h2>
               </div>
@@ -280,7 +280,7 @@ export default function HomePage() {
                 <div className="p-3 rounded-full bg-orange-100 mr-4">
                   <Home className="h-8 w-8 text-orange-600" />
                 </div>
-                <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">
+                <h2 className="text-xl sm:text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight">
                   Houses for Sale
                 </h2>
               </div>
@@ -309,7 +309,7 @@ export default function HomePage() {
       {/* Call to Action */}
       <section className="py-12 sm:py-16 bg-primary-600 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-2xl sm:text-3xl font-bold mb-3 sm:mb-4">
+          <h2 className="text-xl sm:text-3xl md:text-4xl font-extrabold tracking-tight mb-3 sm:mb-4">
             Ready to Find Your Perfect Property?
           </h2>
           <p className="text-base sm:text-lg md:text-xl mb-6 sm:mb-8 text-primary-100 px-2">
