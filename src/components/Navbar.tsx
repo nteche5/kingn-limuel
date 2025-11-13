@@ -181,85 +181,86 @@ const Navbar = () => {
           </div>
         </div>
 
-        {/* Mobile Navigation Menu - partial right-slide drawer */}
+        {/* Mobile Navigation Menu - dropdown from top */}
         {isMobileMenuOpen && (
-          <div className="fixed inset-0 z-40 flex md:hidden">
-            {/* Left transparent overlay to close */}
-            <button
-              className="flex-1 bg-black/40"
-              aria-label="Close menu"
+          <>
+            {/* Background overlay */}
+            <div 
+              className="fixed inset-0 bg-black/40 z-40 md:hidden"
               onClick={toggleMobileMenu}
             />
-
-            {/* Right drawer */}
-            <div className="relative h-full w-3/5 min-w-[48vw] max-w-[260px] bg-slate-950 shadow-2xl">
-              <div className="flex justify-end px-4 pt-4">
-                <button
-                  onClick={toggleMobileMenu}
-                  aria-label="Close menu"
-                  className="flex h-10 w-10 items-center justify-center rounded-full border border-emerald-400 text-emerald-200"
-                >
-                  <span className="sr-only">Close</span>
-                  <svg
-                    className="h-5 w-5"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
+            
+            {/* Dropdown panel */}
+            <div className="fixed top-16 left-0 right-0 bg-slate-950 shadow-2xl z-50 md:hidden animate-slide-down">
+              <div className="relative px-6 py-8 max-h-[70vh] overflow-y-auto">
+                {/* Close button */}
+                <div className="absolute top-4 right-4">
+                  <button
+                    onClick={toggleMobileMenu}
+                    aria-label="Close menu"
+                    className="flex h-10 w-10 items-center justify-center rounded-full border border-emerald-400 bg-slate-900 text-emerald-200 hover:bg-slate-800 transition-colors"
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
-                </button>
-              </div>
-
-              <nav className="px-6 py-6 space-y-6">
-                {navItems.map((item) => {
-                  const isActive =
-                    pathname === item.href ||
-                    (item.href.startsWith('/properties') &&
-                      pathname.startsWith('/properties')) ||
-                    (item.href === '/admin' && pathname.startsWith('/admin'))
-
-                  return (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      onClick={() => setIsMobileMenuOpen(false)}
-                      className={cn(
-                        'block text-lg font-medium transition-colors',
-                        isActive ? 'text-white' : 'text-slate-100 hover:text-white'
-                      )}
+                    <svg
+                      className="h-5 w-5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
                     >
-                      {item.label}
-                    </Link>
-                  )
-                })}
-
-                <div className="mt-6 border-t border-white/20 pt-6 space-y-2">
-                  {adminStatus ? (
-                    <button
-                      onClick={handleLogout}
-                      className="w-full text-left text-base font-medium text-slate-100"
-                    >
-                      Admin Logout
-                    </button>
-                  ) : (
-                    <Link
-                      href="/admin-login"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                      className="block text-base font-medium text-slate-100"
-                    >
-                      Admin Login
-                    </Link>
-                  )}
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M6 18L18 6M6 6l12 12"
+                      />
+                    </svg>
+                  </button>
                 </div>
-              </nav>
+
+                <nav className="space-y-6 pt-8">
+                  {navItems.map((item) => {
+                    const isActive =
+                      pathname === item.href ||
+                      (item.href.startsWith('/properties') &&
+                        pathname.startsWith('/properties')) ||
+                      (item.href === '/admin' && pathname.startsWith('/admin'))
+
+                    return (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className={cn(
+                          'block text-lg font-medium transition-colors',
+                          isActive ? 'text-white' : 'text-slate-100 hover:text-white'
+                        )}
+                      >
+                        {item.label}
+                      </Link>
+                    )
+                  })}
+
+                  <div className="border-t border-white/20 pt-6 space-y-2">
+                    {adminStatus ? (
+                      <button
+                        onClick={handleLogout}
+                        className="w-full text-left text-base font-medium text-slate-100 hover:text-white transition-colors"
+                      >
+                        Admin Logout
+                      </button>
+                    ) : (
+                      <Link
+                        href="/admin-login"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="block text-base font-medium text-slate-100 hover:text-white transition-colors"
+                      >
+                        Admin Login
+                      </Link>
+                    )}
+                  </div>
+                </nav>
+              </div>
             </div>
-          </div>
+          </>
         )}
       </div>
     </nav>
