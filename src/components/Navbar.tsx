@@ -191,8 +191,8 @@ const Navbar = () => {
               onClick={toggleMobileMenu}
             />
 
-            <div className="fixed inset-y-0 left-0 w-[70vw] max-w-xs bg-[#020714] text-white shadow-2xl z-50 md:hidden animate-slide-left">
-              <div className="relative h-full px-6 py-10 flex flex-col">
+            <div className="fixed inset-y-0 left-0 w-[70vw] max-w-xs bg-[#020714] text-white shadow-2xl z-50 md:hidden animate-slide-left min-h-screen">
+              <div className="relative h-full px-4 py-8 flex flex-col justify-start">
                 <button
                   onClick={toggleMobileMenu}
                   aria-label="Close menu"
