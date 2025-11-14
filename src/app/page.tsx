@@ -171,11 +171,11 @@ export default function HomePage() {
         <section className="py-8 sm:py-12 md:py-16 bg-gray-50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-8 sm:mb-12">
-              <div className="flex items-center justify-center mb-3 sm:mb-4">
-                <div className="p-3 rounded-full bg-blue-100 mr-4">
-                  <Building2 className="h-8 w-8 text-blue-600" />
+              <div className="group inline-flex flex-col items-center gap-3 mx-auto">
+                <div className="p-3 w-16 h-16 rounded-full bg-gradient-to-br from-blue-100 to-blue-200 text-blue-600 flex items-center justify-center shadow-lg transition-all duration-300 group-hover:scale-105 group-hover:-translate-y-1">
+                  <Building2 className="h-7 w-7 transition-transform duration-500 group-hover:rotate-6" />
                 </div>
-                <h2 className="text-xl sm:text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight">
+                <h2 className="text-xl sm:text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight transition-colors duration-300 group-hover:text-blue-600">
                   Featured Properties
                 </h2>
               </div>
@@ -206,11 +206,11 @@ export default function HomePage() {
         <section className="py-8 sm:py-12 md:py-16">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-8 sm:mb-12">
-              <div className="flex items-center justify-center mb-3 sm:mb-4">
-                <div className="p-3 rounded-full bg-green-100 mr-4">
-                  <Building2 className="h-8 w-8 text-green-600" />
+              <div className="group inline-flex flex-col items-center gap-3 mx-auto">
+                <div className="p-3 w-16 h-16 rounded-full bg-gradient-to-br from-green-100 to-green-200 text-green-600 flex items-center justify-center shadow-lg transition-all duration-300 group-hover:scale-105 group-hover:-translate-y-1">
+                  <Building2 className="h-7 w-7 transition-transform duration-500 group-hover:rotate-6" />
                 </div>
-                <h2 className="text-xl sm:text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight">
+                <h2 className="text-xl sm:text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight transition-colors duration-300 group-hover:text-green-600">
                   Lands for Sale
                 </h2>
               </div>
@@ -241,11 +241,11 @@ export default function HomePage() {
         <section className="py-8 sm:py-12 md:py-16 bg-gray-50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-8 sm:mb-12">
-              <div className="flex items-center justify-center mb-3 sm:mb-4">
-                <div className="p-3 rounded-full bg-purple-100 mr-4">
-                  <DoorOpen className="h-8 w-8 text-purple-600" />
+              <div className="group inline-flex flex-col items-center gap-3 mx-auto">
+                <div className="p-3 w-16 h-16 rounded-full bg-gradient-to-br from-purple-100 to-purple-200 text-purple-600 flex items-center justify-center shadow-lg transition-all duration-300 group-hover:scale-105 group-hover:-translate-y-1">
+                  <DoorOpen className="h-7 w-7 transition-transform duration-500 group-hover:rotate-6" />
                 </div>
-                <h2 className="text-xl sm:text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight">
+                <h2 className="text-xl sm:text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight transition-colors duration-300 group-hover:text-purple-600">
                   Houses for Rent
                 </h2>
               </div>
@@ -276,11 +276,11 @@ export default function HomePage() {
         <section className="py-8 sm:py-12 md:py-16">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-8 sm:mb-12">
-              <div className="flex items-center justify-center mb-3 sm:mb-4">
-                <div className="p-3 rounded-full bg-orange-100 mr-4">
-                  <Home className="h-8 w-8 text-orange-600" />
+              <div className="group inline-flex flex-col items-center gap-3 mx-auto">
+                <div className="p-3 w-16 h-16 rounded-full bg-gradient-to-br from-orange-100 to-orange-200 text-orange-600 flex items-center justify-center shadow-lg transition-all duration-300 group-hover:scale-105 group-hover:-translate-y-1">
+                  <Home className="h-7 w-7 transition-transform duration-500 group-hover:rotate-6" />
                 </div>
-                <h2 className="text-xl sm:text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight">
+                <h2 className="text-xl sm:text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight transition-colors duration-300 group-hover:text-orange-600">
                   Houses for Sale
                 </h2>
               </div>
