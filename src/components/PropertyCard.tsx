@@ -48,69 +48,11 @@ const PropertyCard = ({ property, onDelete, showDelete = false }: PropertyCardPr
           fill
           className="object-cover transition-transform duration-500 ease-out group-hover:scale-105"
         />
-        {/* Top badges */}
-        <div className="absolute top-3 left-3">
-          <span className={`px-2 py-1 rounded-full text-xs font-medium ${getPurposeColor(property.purpose)}`}>
-            {getPurposeLabel(property.purpose)}
-          </span>
-          {property.promotionPrice != null && (
-            <span className="ml-2 px-2 py-1 rounded-full text-[10px] font-semibold bg-red-100 text-red-700">
-              PROMO
-            </span>
-          )}
-        </div>
-        <div className="absolute top-3 right-3 flex items-center space-x-2">
-          <span className="text-lg select-none">{getPropertyTypeIcon(property.propertyType)}</span>
-          {showDelete && onDelete ? (
-            <button
-              onClick={(e) => {
-                e.preventDefault()
-                setShowDeleteConfirm(true)
-              }}
-              className="bg-red-500 hover:bg-red-600 text-white rounded-full p-1.5 opacity-90 hover:opacity-100 transition-all duration-200 shadow-lg"
-              title="Delete property"
-            >
-              <Trash2 className="h-3 w-3" />
-            </button>
-          ) : (
-            <button
-              onClick={(e) => {
-                e.preventDefault()
-                setLiked(prev => !prev)
-              }}
-              aria-label={liked ? 'Remove from saved' : 'Save property'}
-              className={`rounded-full p-1.5 transition-colors duration-200 shadow-lg ${
-                liked ? 'bg-pink-500 text-white hover:bg-pink-600' : 'bg-white text-gray-700 hover:bg-gray-100'
-              }`}
-              title={liked ? 'Saved' : 'Save'}
-            >
-              <Heart className={`h-4 w-4 ${liked ? 'fill-white' : ''}`} />
-            </button>
-          )}
-        </div>
-        {property.featured && (
-          <div className="absolute top-3 right-12">
-            <span className="bg-yellow-400 text-yellow-900 px-2 py-1 rounded-full text-xs font-bold">
-              FEATURED
-            </span>
-          </div>
-        )}
-        {/* Bottom gradient and quick title/cta on hover */}
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-        <div className="absolute inset-x-0 bottom-0 p-3 flex items-end justify-between opacity-0 translate-y-2 transition-all duration-300 group-hover:opacity-100 group-hover:translate-y-0">
-          <div className="min-w-0">
-            <p className="text-white text-sm font-semibold truncate">{property.title}</p>
-            <p className="text-white/80 text-xs flex items-center truncate">
-              <MapPin className="h-3 w-3 mr-1" />
-              {property.location}
-            </p>
-          </div>
-          <Link href={`/properties/${property.id}`} className="pointer-events-auto">
-            <Button size="sm" className="bg-white text-gray-900 hover:bg-gray-100">
-              <Eye className="h-4 w-4 mr-1.5" />
-              View
-            </Button>
-          </Link>
+        {/* Image overlay */}
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/70 via-black/30 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+        <div className="absolute inset-x-0 bottom-0 p-4 flex flex-col gap-1 opacity-0 translate-y-2 transition-all duration-300 group-hover:opacity-100 group-hover:translate-y-0">
+          <p className="text-white text-base font-semibold leading-tight truncate">{property.title}</p>
+          <p className="text-white/70 text-xs uppercase tracking-wide">{property.location}</p>
         </div>
       </div>
       
@@ -120,10 +62,7 @@ const PropertyCard = ({ property, onDelete, showDelete = false }: PropertyCardPr
             <h3 className="font-semibold text-gray-900 line-clamp-2 transition-colors group-hover:text-primary-600">
               {property.title}
             </h3>
-            <div className="flex items-center text-gray-600 text-sm mt-1">
-              <MapPin className="h-4 w-4 mr-1" />
-              <span>{property.location}</span>
-            </div>
+            <p className="text-sm text-gray-500 mt-1">{property.location}</p>
           </div>
 
           <div className="flex items-center justify-between">
@@ -148,32 +87,11 @@ const PropertyCard = ({ property, onDelete, showDelete = false }: PropertyCardPr
             </div>
           </div>
 
-          {property.propertyType === 'house' && (
-            <div className="flex items-center space-x-4 text-sm text-gray-600">
-              <div className="flex items-center">
-                <Bed className="h-4 w-4 mr-1" />
-                <span>3</span>
-              </div>
-              <div className="flex items-center">
-                <Bath className="h-4 w-4 mr-1" />
-                <span>2</span>
-              </div>
-              <div className="flex items-center">
-                <Square className="h-4 w-4 mr-1" />
-                <span>120m²</span>
-              </div>
-            </div>
-          )}
-
-          <div className="pt-2 space-y-2">
-            <Link href={`/properties/${property.id}`}>
-              <Button className="w-full transition-colors group-hover:bg-primary-700">
-                <Eye className="h-4 w-4 mr-2" />
-                View Details
-              </Button>
-            </Link>
-            
-          </div>
+          <Link href={`/properties/${property.id}`}>
+            <Button className="w-full transition-colors group-hover:bg-primary-700">
+              View Details
+            </Button>
+          </Link>
         </div>
       </CardContent>
 
