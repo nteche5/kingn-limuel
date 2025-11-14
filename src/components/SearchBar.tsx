@@ -121,8 +121,8 @@ const SearchBar = () => {
   }, [])
 
   return (
-    <div className="bg-white/85 backdrop-blur-md border border-gray-200/70 shadow-sm px-0.5 py-0.5 sm:px-1.5 sm:py-1 rounded-full max-w-md sm:max-w-2xl mx-auto">
-      <div className="flex flex-row flex-wrap items-stretch gap-0.5 sm:flex-nowrap sm:gap-1.5">
+    <div className="bg-white/85 backdrop-blur-md border border-gray-200/70 shadow-sm px-0.5 py-0.5 sm:px-1.5 sm:py-1 rounded-full max-w-[260px] sm:max-w-2xl mx-auto transition-all duration-200">
+      <div className="flex flex-row flex-wrap items-stretch gap-0.25 sm:flex-nowrap sm:gap-1">
         {/* Location */}
         <div className="relative flex-1 min-w-[120px] sm:flex-1" ref={dropdownRefs.location}>
           <div className="relative">
@@ -134,7 +134,7 @@ const SearchBar = () => {
               onFocus={() => setShowLocSuggestions(true)}
               onBlur={() => setTimeout(() => setShowLocSuggestions(false), 100)}
               placeholder="Location"
-              className="w-full h-6 sm:h-8 pl-6 sm:pl-8 pr-2.5 sm:pr-5 rounded-full bg-white/95 hover:bg-white border border-gray-200 text-left text-[9px] sm:text-[11px] text-gray-900 placeholder-gray-500 focus:outline-none focus-visible:ring-[1.5px] focus-visible:ring-primary-500"
+              className="w-full h-5 sm:h-6 pl-5 sm:pl-8 pr-2.5 sm:pr-5 rounded-full bg-white/95 hover:bg-white border border-gray-200 text-left text-[8px] sm:text-[11px] text-gray-900 placeholder-gray-500 focus:outline-none focus-visible:ring-[1.5px] focus-visible:ring-primary-500"
               aria-label="Location"
             />
             {showLocSuggestions && locSuggestions.length > 0 && (
@@ -166,7 +166,7 @@ const SearchBar = () => {
               type="button"
               aria-label="Select property type"
               onClick={() => toggleDropdown('propertyType')}
-              className="w-full h-6 sm:h-8 pl-6 sm:pl-8 pr-3.5 sm:pr-6 rounded-full bg-transparent hover:bg-white/70 border-0 text-left flex items-center justify-between text-[9px] sm:text-[11px] focus-visible:ring-[1.5px] focus-visible:ring-primary-500"
+              className="w-full h-5 sm:h-6 pl-5 sm:pl-8 pr-3.5 sm:pr-6 rounded-full bg-transparent hover:bg-white/70 border-0 text-left flex items-center justify-between text-[8px] sm:text-[11px] focus-visible:ring-[1.5px] focus-visible:ring-primary-500"
             >
               <span className={`${filters.propertyType ? 'text-gray-900' : 'text-gray-500'} truncate max-w-[75%]`}>
                 {getDisplayValue('propertyType')}
@@ -214,7 +214,7 @@ const SearchBar = () => {
               type="button"
               aria-label="Select purpose"
               onClick={() => toggleDropdown('purpose')}
-              className="w-full h-6 sm:h-8 pl-6 sm:pl-8 pr-3.5 sm:pr-6 rounded-full bg-transparent hover:bg-white/70 border-0 text-left flex items-center justify-between text-[9px] sm:text-[11px] focus-visible:ring-[1.5px] focus-visible:ring-primary-500"
+              className="w-full h-5 sm:h-6 pl-5 sm:pl-8 pr-3.5 sm:pr-6 rounded-full bg-transparent hover:bg-white/70 border-0 text-left flex items-center justify-between text-[8px] sm:text-[11px] focus-visible:ring-[1.5px] focus-visible:ring-primary-500"
             >
               <span className={`${filters.purpose ? 'text-gray-900' : 'text-gray-500'} truncate max-w-[75%]`}>
                 {getDisplayValue('purpose')}
@@ -257,7 +257,7 @@ const SearchBar = () => {
         <div className="flex-none sm:ml-auto">
           <Button
             onClick={handleSearch}
-            className="w-6 h-6 sm:w-auto sm:h-8 sm:px-3 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-full flex items-center justify-center space-x-1.5 text-[9px] sm:text-[11px] shadow-sm p-0"
+            className="w-6 h-6 sm:w-8 sm:h-8 sm:px-2 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-full flex items-center justify-center text-[8px] sm:text-[11px] shadow-sm p-0"
           >
             <Search className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
             <span className="hidden sm:inline">Search</span>
