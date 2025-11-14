@@ -191,8 +191,8 @@ const Navbar = () => {
               onClick={toggleMobileMenu}
             />
 
-            <div className="fixed inset-y-0 left-0 w-[70vw] max-w-xs bg-[#020714] text-white shadow-2xl z-50 md:hidden animate-slide-left min-h-screen">
-              <div className="relative h-full px-4 py-8 flex flex-col justify-start">
+            <div className="fixed inset-y-0 left-0 w-[70vw] max-w-xs bg-gradient-to-b from-[#020714] to-[#050811] text-white shadow-2xl z-50 md:hidden animate-slide-left min-h-screen">
+              <div className="relative h-full px-6 py-10 flex flex-col justify-start space-y-6">
                 <button
                   onClick={toggleMobileMenu}
                   aria-label="Close menu"
@@ -213,7 +213,7 @@ const Navbar = () => {
                   </svg>
                 </button>
 
-                <nav className="mt-4 space-y-6">
+                <nav className="mt-10 space-y-4">
                   {navItems.map((item) => {
                     const isActive =
                       pathname === item.href ||
@@ -227,9 +227,10 @@ const Navbar = () => {
                         href={item.href}
                         onClick={() => setIsMobileMenuOpen(false)}
                         className={cn(
-                          'block text-lg font-medium',
-                          isActive ? 'text-white' : 'text-slate-100'
+                          'block text-lg font-semibold tracking-wide transition-colors animate-fade-in',
+                          isActive ? 'text-white' : 'text-slate-200 hover:text-white'
                         )}
+                        style={{ textShadow: '0 6px 18px rgba(0, 0, 0, 0.5)' }}
                       >
                         {item.label}
                       </Link>
