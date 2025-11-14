@@ -181,23 +181,22 @@ const Navbar = () => {
           </div>
         </div>
 
-        {/* Mobile Navigation Menu - partial top panel */}
+        {/* Mobile Navigation Menu - partial left drawer */}
         {isMobileMenuOpen && (
-          <div className="fixed inset-0 z-40 md:hidden">
-            {/* Clickable backdrop */}
-            <div
-              className="absolute inset-0 bg-transparent"
+          <>
+            {/* Transparent backdrop to detect outside clicks */}
+            <button
+              className="fixed inset-y-0 right-0 left-[70vw] bg-transparent z-40 md:hidden"
+              aria-label="Close menu"
               onClick={toggleMobileMenu}
             />
 
-            {/* Top panel */}
-            <div className="relative w-full max-h-[70vh] bg-[#04070f] text-white shadow-2xl rounded-b-3xl overflow-hidden">
-              {/* Close button */}
-              <div className="flex justify-center pt-4">
+            <div className="fixed inset-y-0 left-0 w-[70vw] max-w-xs bg-[#020714] text-white shadow-2xl z-50 md:hidden animate-slide-left">
+              <div className="relative h-full px-6 py-10 flex flex-col">
                 <button
                   onClick={toggleMobileMenu}
                   aria-label="Close menu"
-                  className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-emerald-400 bg-slate-900 text-emerald-200 shadow-lg"
+                  className="absolute -right-5 top-6 flex h-10 w-10 items-center justify-center rounded-full border-2 border-emerald-400 bg-slate-900 text-emerald-200 shadow-lg"
                 >
                   <svg
                     className="h-5 w-5"
@@ -213,52 +212,52 @@ const Navbar = () => {
                     />
                   </svg>
                 </button>
-              </div>
 
-              <div className="px-6 py-8 space-y-6">
-                {navItems.map((item) => {
-                  const isActive =
-                    pathname === item.href ||
-                    (item.href.startsWith('/properties') &&
-                      pathname.startsWith('/properties')) ||
-                    (item.href === '/admin' && pathname.startsWith('/admin'))
+                <nav className="mt-4 space-y-6">
+                  {navItems.map((item) => {
+                    const isActive =
+                      pathname === item.href ||
+                      (item.href.startsWith('/properties') &&
+                        pathname.startsWith('/properties')) ||
+                      (item.href === '/admin' && pathname.startsWith('/admin'))
 
-                  return (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      onClick={() => setIsMobileMenuOpen(false)}
-                      className={cn(
-                        'block text-lg font-medium tracking-tight',
-                        isActive ? 'text-white' : 'text-slate-100'
-                      )}
-                    >
-                      {item.label}
-                    </Link>
-                  )
-                })}
+                    return (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className={cn(
+                          'block text-lg font-medium',
+                          isActive ? 'text-white' : 'text-slate-100'
+                        )}
+                      >
+                        {item.label}
+                      </Link>
+                    )
+                  })}
 
-                <div className="border-t border-white/10 pt-6 space-y-2">
-                  {adminStatus ? (
-                    <button
-                      onClick={handleLogout}
-                      className="w-full text-left text-base font-medium text-slate-100"
-                    >
-                      Admin Logout
-                    </button>
-                  ) : (
-                    <Link
-                      href="/admin-login"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                      className="block text-base font-medium text-slate-100"
-                    >
-                      Admin Login
-                    </Link>
-                  )}
-                </div>
+                  <div className="border-t border-white/10 pt-6 space-y-2">
+                    {adminStatus ? (
+                      <button
+                        onClick={handleLogout}
+                        className="w-full text-left text-base font-medium text-slate-100"
+                      >
+                        Admin Logout
+                      </button>
+                    ) : (
+                      <Link
+                        href="/admin-login"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="block text-base font-medium text-slate-100"
+                      >
+                        Admin Login
+                      </Link>
+                    )}
+                  </div>
+                </nav>
               </div>
             </div>
-          </div>
+          </>
         )}
       </div>
     </nav>
