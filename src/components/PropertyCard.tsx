@@ -48,7 +48,24 @@ const PropertyCard = ({ property, onDelete, showDelete = false }: PropertyCardPr
           fill
           className="object-cover transition-transform duration-500 ease-out group-hover:scale-105"
         />
-        {/* Image overlay */}
+        <div className="absolute top-3 left-3">
+          <span
+            className={`px-3 py-1 rounded-full text-[10px] font-semibold uppercase tracking-widest ${
+              property.purpose === 'buy'
+                ? 'bg-green-600/90 text-white'
+                : 'bg-blue-700/80 text-white'
+            }`}
+          >
+            {property.purpose === 'buy' ? 'For Sale' : 'For Rent'}
+          </span>
+        </div>
+        {property.promotionPrice != null && (
+          <div className="absolute top-3 right-3">
+            <span className="px-3 py-1 rounded-full text-[10px] font-semibold bg-red-600/90 text-white">
+              Promo
+            </span>
+          </div>
+        )}
         <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/70 via-black/30 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
         <div className="absolute inset-x-0 bottom-0 p-4 flex flex-col gap-1 opacity-0 translate-y-2 transition-all duration-300 group-hover:opacity-100 group-hover:translate-y-0">
           <p className="text-white text-base font-semibold leading-tight truncate">{property.title}</p>
