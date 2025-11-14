@@ -181,32 +181,41 @@ const Navbar = () => {
           </div>
         </div>
 
-        {/* Mobile Navigation Menu - partial left drawer */}
+        {/* Mobile Navigation Menu - partial top panel */}
         {isMobileMenuOpen && (
-          <div className="fixed inset-y-0 left-0 w-[68vw] max-w-sm bg-[#04070f] text-white shadow-2xl z-50 md:hidden animate-slide-left">
-            <div className="relative h-full px-6 py-10 flex flex-col">
-              {/* Close button floating on edge */}
-              <button
-                onClick={toggleMobileMenu}
-                aria-label="Close menu"
-                className="absolute -right-5 top-6 flex h-10 w-10 items-center justify-center rounded-full border-2 border-emerald-400 bg-slate-900 text-emerald-200 shadow-lg"
-              >
-                <svg
-                  className="h-5 w-5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              </button>
+          <div className="fixed inset-0 z-40 md:hidden">
+            {/* Clickable backdrop */}
+            <div
+              className="absolute inset-0 bg-transparent"
+              onClick={toggleMobileMenu}
+            />
 
-              <nav className="mt-6 space-y-6">
+            {/* Top panel */}
+            <div className="relative w-full max-h-[70vh] bg-[#04070f] text-white shadow-2xl rounded-b-3xl overflow-hidden">
+              {/* Close button */}
+              <div className="flex justify-center pt-4">
+                <button
+                  onClick={toggleMobileMenu}
+                  aria-label="Close menu"
+                  className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-emerald-400 bg-slate-900 text-emerald-200 shadow-lg"
+                >
+                  <svg
+                    className="h-5 w-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
+              </div>
+
+              <div className="px-6 py-8 space-y-6">
                 {navItems.map((item) => {
                   const isActive =
                     pathname === item.href ||
@@ -220,7 +229,7 @@ const Navbar = () => {
                       href={item.href}
                       onClick={() => setIsMobileMenuOpen(false)}
                       className={cn(
-                        'block text-lg font-medium',
+                        'block text-lg font-medium tracking-tight',
                         isActive ? 'text-white' : 'text-slate-100'
                       )}
                     >
@@ -247,7 +256,7 @@ const Navbar = () => {
                     </Link>
                   )}
                 </div>
-              </nav>
+              </div>
             </div>
           </div>
         )}
