@@ -5,6 +5,7 @@ import SearchBar from '@/components/SearchBar'
 import PropertyCard from '@/components/PropertyCard'
 import { motion } from 'framer-motion'
 import BackgroundSlideshow from '@/components/BackgroundSlideshow'
+import WelcomeBanner from '@/components/WelcomeBanner'
 import { Property } from '@/types'
 import { getAllProperties } from '@/lib/propertyManager'
 import { Facebook, MessageCircle, Key, Users } from 'lucide-react'
@@ -93,6 +94,9 @@ export default function HomePage() {
           </div>
         </div>
       </div>
+
+      {/* Animated Welcome Banner */}
+      <WelcomeBanner />
 
       {/* Hero Section with Background Slideshow */}
       <BackgroundSlideshow

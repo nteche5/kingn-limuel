@@ -14,15 +14,15 @@ const Navbar = () => {
 
   useEffect(() => {
     setAdminStatus(isAdminLoggedIn())
-    
+
     // Listen for admin status changes
     const handleStorageChange = () => {
       setAdminStatus(isAdminLoggedIn())
     }
-    
+
     window.addEventListener('storage', handleStorageChange)
     window.addEventListener('adminStatusChanged', handleStorageChange)
-    
+
     return () => {
       window.removeEventListener('storage', handleStorageChange)
       window.removeEventListener('adminStatusChanged', handleStorageChange)
@@ -100,25 +100,19 @@ const Navbar = () => {
   }
 
   return (
-    <nav className="bg-white/95 backdrop-blur-lg shadow-xl border-b border-gray-200/50 sticky top-0 z-50">
+    <nav className="bg-gray-900 shadow-2xl border-b border-gray-800 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          {/* Logo */}
-          <Link href="/" className="group flex items-center space-x-3 transition-all duration-300 hover:scale-105">
-            <div className="flex items-center space-x-3">
-              <div className="relative">
-                <Building2 className="h-10 w-10 text-primary-600 transition-all duration-300 group-hover:rotate-12 group-hover:text-primary-700" />
-                <div className="absolute inset-0 bg-gradient-to-r from-primary-400 to-primary-600 rounded-full blur-md opacity-0 group-hover:opacity-30 transition-opacity duration-300" />
-              </div>
-              <div>
-                <h1 className="text-xl font-bold text-gray-900 transition-colors duration-300 group-hover:text-primary-700">King Lemuel</h1>
-                <p className="text-sm text-gray-600 -mt-1 transition-colors duration-300 group-hover:text-primary-600">Properties</p>
-              </div>
+          {/* Logo - Text Only */}
+          <Link href="/" className="group flex items-center transition-all duration-300">
+            <div>
+              <h1 className="text-xl font-bold text-white transition-colors duration-300 group-hover:text-blue-400">King Lemuel</h1>
+              <p className="text-sm text-gray-400 -mt-1 transition-colors duration-300 group-hover:text-blue-300">Properties</p>
             </div>
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="hidden md:flex items-center space-x-1">
             {navItems.map((item) => {
               const isActive =
                 pathname === item.href ||
@@ -129,28 +123,34 @@ const Navbar = () => {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={cn(
-                    'text-sm font-medium transition-colors border-b-2',
-                    getNavColorClasses(item.color, isActive)
-                  )}
+                  className="relative px-4 py-2 text-sm font-medium text-gray-300 transition-all duration-300 group"
                 >
-                  {item.label}
+                  {/* Text */}
+                  <span className="relative z-10 group-hover:text-white transition-colors duration-300">{item.label}</span>
+
+                  {/* Hover background - only shows on hover */}
+                  <span className="absolute inset-0 bg-gray-800 opacity-0 group-hover:opacity-100 rounded-lg transition-all duration-300" />
+
+                  {/* Active indicator - subtle underline */}
+                  {isActive && (
+                    <span className="absolute bottom-1 left-1/2 -translate-x-1/2 w-1/2 h-0.5 bg-blue-500 rounded-full" />
+                  )}
                 </Link>
               )
             })}
 
-            {/* Admin Login/Logout */}
+            {/* Admin Login/Logout Button */}
             {adminStatus ? (
               <button
                 onClick={handleLogout}
-                className="ml-6 text-sm font-medium text-gray-600 hover:text-red-600 transition-colors border-b-2 border-transparent hover:border-red-400"
+                className="ml-2 px-4 py-2 text-sm font-semibold text-white bg-red-600 rounded-lg shadow-lg shadow-red-900/50 hover:bg-red-700 transition-all duration-300 transform hover:scale-105"
               >
-                Logout Admin
+                Logout
               </button>
             ) : (
               <Link
                 href="/admin-login"
-                className="ml-6 text-sm font-medium text-gray-600 hover:text-green-600 transition-colors border-b-2 border-transparent hover:border-green-400"
+                className="ml-2 px-4 py-2 text-sm font-semibold text-white bg-emerald-600 rounded-lg shadow-lg shadow-emerald-900/50 hover:bg-emerald-700 transition-all duration-300 transform hover:scale-105"
               >
                 Admin Login
               </Link>
