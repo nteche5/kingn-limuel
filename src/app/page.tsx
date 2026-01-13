@@ -7,7 +7,7 @@ import { motion } from 'framer-motion'
 import BackgroundSlideshow from '@/components/BackgroundSlideshow'
 import { Property } from '@/types'
 import { getAllProperties } from '@/lib/propertyManager'
-import { Facebook, MessageCircle, Key, Home, Building2, DoorOpen, Users } from 'lucide-react'
+import { Facebook, MessageCircle, Key, Users } from 'lucide-react'
 
 export default function HomePage() {
   const [properties, setProperties] = useState<Property[]>([])
@@ -62,17 +62,17 @@ export default function HomePage() {
 
   // Get featured properties
   const featuredProperties = properties.filter(property => property.featured)
-  
+
   // Get properties by category
-  const landsForSale = properties.filter(property => 
+  const landsForSale = properties.filter(property =>
     property.propertyType === 'land' && property.purpose === 'buy'
   )
-  
-  const housesForRent = properties.filter(property => 
+
+  const housesForRent = properties.filter(property =>
     property.propertyType === 'house' && property.purpose === 'rent'
   )
-  
-  const housesForSale = properties.filter(property => 
+
+  const housesForSale = properties.filter(property =>
     property.propertyType === 'house' && property.purpose === 'buy'
   )
 
@@ -95,68 +95,68 @@ export default function HomePage() {
       </div>
 
       {/* Hero Section with Background Slideshow */}
-      <BackgroundSlideshow 
+      <BackgroundSlideshow
         images={backgroundImages}
         interval={5000}
         className="min-h-screen"
       >
         <section className="relative min-h-screen flex items-center justify-center text-white overflow-hidden">
-        
-             <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 md:py-24 text-center z-10">
-               <div className="mb-8 sm:mb-12">
-                 <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-6xl xl:text-7xl font-bold mb-4 sm:mb-6 animate-fade-in bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent leading-tight">
-                   Building Trust, One Property at a Time
-                 </h1>
-                 <p className="text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl mb-6 sm:mb-8 text-gray-100 animate-slide-up max-w-4xl mx-auto leading-relaxed px-2">
-                   Your trusted partner in finding the perfect property in Ghana. 
-                   From modern apartments to luxury estates, we connect you with your dream home.
-                 </p>
-               </div>
-          
-          {/* Removed in-hero SearchBar; moved to sticky top */}
-          
-               {/* Trust indicators */}
-               <div className="mt-8 sm:mt-12 md:mt-16 grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 md:gap-8 max-w-4xl mx-auto">
-                 <div className="text-center">
-                   <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-blue-300 mb-1 sm:mb-2">500+</div>
-                   <div className="text-gray-200 text-sm sm:text-base">Properties Listed</div>
-                 </div>
-                 <div className="text-center">
-                   <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-blue-300 mb-1 sm:mb-2">1000+</div>
-                   <div className="text-gray-200 text-sm sm:text-base">Happy Clients</div>
-                 </div>
-                 <div className="text-center">
-                   <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-blue-300 mb-1 sm:mb-2">5+</div>
-                   <div className="text-gray-200 text-sm sm:text-base">Years Experience</div>
-                 </div>
-               </div>
-               
-               {/* Social Media */}
-               <div className="mt-8 sm:mt-12 text-center">
-                 <p className="text-white text-opacity-80 text-sm sm:text-base mb-4">Connect with us</p>
-                 <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
-                   <a 
-                     href="https://www.facebook.com/profile.php?id=100071941852508" 
-                     target="_blank" 
-                     rel="noopener noreferrer"
-                     className="inline-flex items-center space-x-2 bg-white bg-opacity-20 hover:bg-opacity-30 text-white px-4 py-2 rounded-lg transition-all duration-200 hover:scale-105"
-                   >
-                     <Facebook className="h-5 w-5" />
-                     <span>Follow on Facebook</span>
-                   </a>
-                   <a 
-                     href="https://wa.me/233244996878" 
-                     target="_blank" 
-                     rel="noopener noreferrer"
-                     className="inline-flex items-center space-x-2 bg-green-600 bg-opacity-80 hover:bg-opacity-100 text-white px-4 py-2 rounded-lg transition-all duration-200 hover:scale-105"
-                   >
-                     <MessageCircle className="h-5 w-5" />
-                     <span>WhatsApp Us</span>
-                   </a>
-                 </div>
-               </div>
-        </div>
-        
+
+          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 md:py-24 text-center z-10">
+            <div className="mb-8 sm:mb-12">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-6xl xl:text-7xl font-bold mb-4 sm:mb-6 animate-fade-in bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent leading-tight">
+                Building Trust, One Property at a Time
+              </h1>
+              <p className="text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl mb-6 sm:mb-8 text-gray-100 animate-slide-up max-w-4xl mx-auto leading-relaxed px-2">
+                Your trusted partner in finding the perfect property in Ghana.
+                From modern apartments to luxury estates, we connect you with your dream home.
+              </p>
+            </div>
+
+            {/* Removed in-hero SearchBar; moved to sticky top */}
+
+            {/* Trust indicators */}
+            <div className="mt-8 sm:mt-12 md:mt-16 grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 md:gap-8 max-w-4xl mx-auto">
+              <div className="text-center">
+                <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-blue-300 mb-1 sm:mb-2">500+</div>
+                <div className="text-gray-200 text-sm sm:text-base">Properties Listed</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-blue-300 mb-1 sm:mb-2">1000+</div>
+                <div className="text-gray-200 text-sm sm:text-base">Happy Clients</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-blue-300 mb-1 sm:mb-2">5+</div>
+                <div className="text-gray-200 text-sm sm:text-base">Years Experience</div>
+              </div>
+            </div>
+
+            {/* Social Media */}
+            <div className="mt-8 sm:mt-12 text-center">
+              <p className="text-white text-opacity-80 text-sm sm:text-base mb-4">Connect with us</p>
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
+                <a
+                  href="https://www.facebook.com/profile.php?id=100071941852508"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center space-x-2 bg-white bg-opacity-20 hover:bg-opacity-30 text-white px-4 py-2 rounded-lg transition-all duration-200 hover:scale-105"
+                >
+                  <Facebook className="h-5 w-5" />
+                  <span>Follow on Facebook</span>
+                </a>
+                <a
+                  href="https://wa.me/233244996878"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center space-x-2 bg-green-600 bg-opacity-80 hover:bg-opacity-100 text-white px-4 py-2 rounded-lg transition-all duration-200 hover:scale-105"
+                >
+                  <MessageCircle className="h-5 w-5" />
+                  <span>WhatsApp Us</span>
+                </a>
+              </div>
+            </div>
+          </div>
+
           {/* Scroll indicator */}
           <div className="absolute bottom-4 sm:bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
             <div className="w-5 h-8 sm:w-6 sm:h-10 border-2 border-white rounded-full flex justify-center">
@@ -168,23 +168,21 @@ export default function HomePage() {
 
       {/* Featured Properties Section */}
       {featuredProperties.length > 0 && (
-        <section className="py-8 sm:py-12 md:py-16 bg-gray-50">
+        <section className="py-12 sm:py-16 bg-gray-50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-8 sm:mb-12">
-              <div className="group inline-flex flex-col items-center gap-3 mx-auto">
-                <div className="p-3 w-16 h-16 rounded-full bg-gradient-to-br from-blue-100 to-blue-200 text-blue-600 flex items-center justify-center shadow-lg transition-all duration-300 group-hover:scale-105 group-hover:-translate-y-1">
-                  <Building2 className="h-7 w-7 transition-transform duration-500 group-hover:rotate-6" />
-                </div>
-                <h2 className="text-xl sm:text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight transition-colors duration-300 group-hover:text-blue-600">
+            <div className="text-center mb-10 sm:mb-14">
+              <div className="inline-block relative mb-3">
+                <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-700 pb-2">
                   Featured Properties
                 </h2>
+                <div className="h-1 w-24 bg-blue-600 mx-auto rounded-full opacity-80"></div>
               </div>
-              <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto px-2">
+              <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto mt-4 font-light">
                 Discover our handpicked selection of premium properties across Ghana
               </p>
             </div>
-            
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 md:gap-10">
               {featuredProperties.map((property, idx) => (
                 <motion.div
                   key={property.id}
@@ -203,23 +201,21 @@ export default function HomePage() {
 
       {/* Lands for Sale */}
       {landsForSale.length > 0 && (
-        <section className="py-8 sm:py-12 md:py-16">
+        <section className="py-12 sm:py-16">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-8 sm:mb-12">
-              <div className="group inline-flex flex-col items-center gap-3 mx-auto">
-                <div className="p-3 w-16 h-16 rounded-full bg-gradient-to-br from-green-100 to-green-200 text-green-600 flex items-center justify-center shadow-lg transition-all duration-300 group-hover:scale-105 group-hover:-translate-y-1">
-                  <Building2 className="h-7 w-7 transition-transform duration-500 group-hover:rotate-6" />
-                </div>
-                <h2 className="text-xl sm:text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight transition-colors duration-300 group-hover:text-green-600">
+            <div className="text-center mb-10 sm:mb-14">
+              <div className="inline-block relative mb-3">
+                <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-emerald-800 to-green-600 pb-2">
                   Lands for Sale
                 </h2>
+                <div className="h-1 w-24 bg-green-500 mx-auto rounded-full opacity-80"></div>
               </div>
-              <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto px-2">
+              <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto mt-4 font-light">
                 Prime land opportunities in the best locations
               </p>
             </div>
-            
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 md:gap-10">
               {landsForSale.map((property, idx) => (
                 <motion.div
                   key={property.id}
@@ -238,23 +234,21 @@ export default function HomePage() {
 
       {/* Houses for Rent */}
       {housesForRent.length > 0 && (
-        <section className="py-8 sm:py-12 md:py-16 bg-gray-50">
+        <section className="py-12 sm:py-16 bg-gray-50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-8 sm:mb-12">
-              <div className="group inline-flex flex-col items-center gap-3 mx-auto">
-                <div className="p-3 w-16 h-16 rounded-full bg-gradient-to-br from-purple-100 to-purple-200 text-purple-600 flex items-center justify-center shadow-lg transition-all duration-300 group-hover:scale-105 group-hover:-translate-y-1">
-                  <DoorOpen className="h-7 w-7 transition-transform duration-500 group-hover:rotate-6" />
-                </div>
-                <h2 className="text-xl sm:text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight transition-colors duration-300 group-hover:text-purple-600">
+            <div className="text-center mb-10 sm:mb-14">
+              <div className="inline-block relative mb-3">
+                <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-900 to-violet-700 pb-2">
                   Houses for Rent
                 </h2>
+                <div className="h-1 w-24 bg-purple-500 mx-auto rounded-full opacity-80"></div>
               </div>
-              <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto px-2">
+              <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto mt-4 font-light">
                 Comfortable homes available for rent in great neighborhoods
               </p>
             </div>
-            
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 md:gap-10">
               {housesForRent.map((property, idx) => (
                 <motion.div
                   key={property.id}
@@ -273,23 +267,21 @@ export default function HomePage() {
 
       {/* Houses for Sale */}
       {housesForSale.length > 0 && (
-        <section className="py-8 sm:py-12 md:py-16">
+        <section className="py-12 sm:py-16">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-8 sm:mb-12">
-              <div className="group inline-flex flex-col items-center gap-3 mx-auto">
-                <div className="p-3 w-16 h-16 rounded-full bg-gradient-to-br from-orange-100 to-orange-200 text-orange-600 flex items-center justify-center shadow-lg transition-all duration-300 group-hover:scale-105 group-hover:-translate-y-1">
-                  <Home className="h-7 w-7 transition-transform duration-500 group-hover:rotate-6" />
-                </div>
-                <h2 className="text-xl sm:text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight transition-colors duration-300 group-hover:text-orange-600">
+            <div className="text-center mb-10 sm:mb-14">
+              <div className="inline-block relative mb-3">
+                <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-orange-800 to-amber-600 pb-2">
                   Houses for Sale
                 </h2>
+                <div className="h-1 w-24 bg-orange-500 mx-auto rounded-full opacity-80"></div>
               </div>
-              <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto px-2">
+              <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto mt-4 font-light">
                 Beautiful homes ready for you to call your own
               </p>
             </div>
-            
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 md:gap-10">
               {housesForSale.map((property, idx) => (
                 <motion.div
                   key={property.id}

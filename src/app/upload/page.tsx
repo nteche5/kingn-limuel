@@ -238,13 +238,16 @@ export default function UploadPropertyPage() {
       )
       if (imageUrls.length === 0) throw new Error('Image upload failed. Please try again.')
 
-      // Optional video - try signed URL (best for mobile), fallback to API
+      // Optional video - try signed URL only (API route has size limits)
       let videoUrl: string | undefined
       if (video[0]) {
         try {
+          // Videos must use signed URL upload as they exceed API body size limits
           videoUrl = await withRetry(() => uploadViaSignedUrl(video[0].file, 'properties/videos'))
-        } catch {
-          videoUrl = await withRetry(() => uploadViaApi(video[0].file, 'properties/videos'))
+        } catch (err: any) {
+          console.error('Video upload failed:', err)
+          // valid error to show to user
+          throw new Error(`Video upload failed: ${err?.message || 'Unknown error'}. Please check your internet connection and try again.`)
         }
       }
 
