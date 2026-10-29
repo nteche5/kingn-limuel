@@ -25,6 +25,7 @@ export const loginAdmin = (): void => {
 
 export const logoutAdmin = (): void => {
   if (typeof window !== 'undefined') {
+    fetch('/api/admin/logout', { method: 'POST' }).catch(() => {})
     localStorage.removeItem('admin-logged-in')
     localStorage.removeItem('admin-remember')
   }

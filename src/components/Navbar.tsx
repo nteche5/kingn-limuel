@@ -2,41 +2,13 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Building2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { isAdminLoggedIn, logoutAdmin } from '@/lib/auth'
 
 const Navbar = () => {
   const pathname = usePathname()
-  const [adminStatus, setAdminStatus] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-
-  useEffect(() => {
-    setAdminStatus(isAdminLoggedIn())
-
-    // Listen for admin status changes
-    const handleStorageChange = () => {
-      setAdminStatus(isAdminLoggedIn())
-    }
-
-    window.addEventListener('storage', handleStorageChange)
-    window.addEventListener('adminStatusChanged', handleStorageChange)
-
-    return () => {
-      window.removeEventListener('storage', handleStorageChange)
-      window.removeEventListener('adminStatusChanged', handleStorageChange)
-    }
-  }, [])
-
-  const handleLogout = () => {
-    logoutAdmin()
-    setAdminStatus(false)
-    setIsMobileMenuOpen(false)
-    window.dispatchEvent(new CustomEvent('adminStatusChanged'))
-    // Redirect to home page
-    window.location.href = '/'
-  }
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen)
@@ -50,12 +22,8 @@ const Navbar = () => {
     { href: '/contact', label: 'Contact', color: 'red' },
   ]
 
-  const adminNavItems = [
-    { href: '/upload', label: 'Upload Property', color: 'indigo' },
-    { href: '/admin', label: 'Admin', color: 'gray' },
-  ]
-
-  const navItems = adminStatus ? [...baseNavItems, ...adminNavItems] : baseNavItems
+  // Admin links are intentionally not shown on the public website.
+  const navItems = baseNavItems
 
   const getNavColorClasses = (color: string, isActive: boolean) => {
     const colorMap: Record<
@@ -116,8 +84,7 @@ const Navbar = () => {
             {navItems.map((item) => {
               const isActive =
                 pathname === item.href ||
-                (item.href.startsWith('/properties') && pathname.startsWith('/properties')) ||
-                (item.href === '/admin' && pathname.startsWith('/admin'))
+                (item.href.startsWith('/properties') && pathname.startsWith('/properties'))
 
               return (
                 <Link
@@ -138,23 +105,6 @@ const Navbar = () => {
                 </Link>
               )
             })}
-
-            {/* Admin Login/Logout Button */}
-            {adminStatus ? (
-              <button
-                onClick={handleLogout}
-                className="ml-2 px-4 py-2 text-sm font-semibold text-white bg-red-600 rounded-lg shadow-lg shadow-red-900/50 hover:bg-red-700 transition-all duration-300 transform hover:scale-105"
-              >
-                Logout
-              </button>
-            ) : (
-              <Link
-                href="/admin-login"
-                className="ml-2 px-4 py-2 text-sm font-semibold text-white bg-emerald-600 rounded-lg shadow-lg shadow-emerald-900/50 hover:bg-emerald-700 transition-all duration-300 transform hover:scale-105"
-              >
-                Admin Login
-              </Link>
-            )}
           </div>
 
           {/* Mobile menu button */}
@@ -218,8 +168,7 @@ const Navbar = () => {
                     const isActive =
                       pathname === item.href ||
                       (item.href.startsWith('/properties') &&
-                        pathname.startsWith('/properties')) ||
-                      (item.href === '/admin' && pathname.startsWith('/admin'))
+                        pathname.startsWith('/properties'))
 
                     return (
                       <Link
@@ -236,25 +185,6 @@ const Navbar = () => {
                       </Link>
                     )
                   })}
-
-                  <div className="border-t border-white/10 pt-6 space-y-2">
-                    {adminStatus ? (
-                      <button
-                        onClick={handleLogout}
-                        className="w-full text-left text-base font-medium text-slate-100"
-                      >
-                        Admin Logout
-                      </button>
-                    ) : (
-                      <Link
-                        href="/admin-login"
-                        onClick={() => setIsMobileMenuOpen(false)}
-                        className="block text-base font-medium text-slate-100"
-                      >
-                        Admin Login
-                      </Link>
-                    )}
-                  </div>
                 </nav>
               </div>
             </div>

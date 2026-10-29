@@ -59,11 +59,6 @@ const Footer = () => {
                   Houses for Sale
                 </Link>
               </li>
-              <li>
-                <Link href="/upload" className="text-gray-300 hover:text-primary-400 transition-colors">
-                  Upload Property
-                </Link>
-              </li>
             </ul>
           </div>
 

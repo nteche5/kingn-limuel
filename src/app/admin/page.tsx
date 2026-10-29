@@ -139,7 +139,8 @@ export default function AdminDashboard() {
     }
   }
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    try { await fetch('/api/admin/logout', { method: 'POST' }) } catch {}
     localStorage.removeItem('admin-logged-in')
     localStorage.removeItem('admin-remember')
     router.push('/admin-login')
