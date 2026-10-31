@@ -17,6 +17,9 @@ function isProtected(req: NextRequest): { page: boolean; api: boolean } {
   if (pathname.startsWith('/api/upload') || pathname.startsWith('/api/storage')) {
     return { page: false, api: true }
   }
+  if (pathname === '/api/analytics' || pathname.startsWith('/api/analytics/')) {
+    return { page: false, api: true }
+  }
   // Property listings: reading is public, create/edit/delete is admin only
   if (pathname.startsWith('/api/properties') && WRITE_METHODS.has(method)) {
     return { page: false, api: true }
@@ -41,5 +44,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/admin', '/admin/:path*', '/upload', '/upload/:path*', '/api/upload/:path*', '/api/upload', '/api/storage/:path*', '/api/properties', '/api/properties/:path*'],
+  matcher: ['/admin', '/admin/:path*', '/upload', '/upload/:path*', '/api/upload/:path*', '/api/upload', '/api/storage/:path*', '/api/analytics', '/api/analytics/:path*', '/api/properties', '/api/properties/:path*'],
 }

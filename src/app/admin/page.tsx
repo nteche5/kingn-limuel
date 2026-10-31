@@ -705,12 +705,7 @@ export default function AdminDashboard() {
 
             {/* Password Change Section */}
             <div className="max-w-2xl">
-              <AdminPasswordChange 
-                onPasswordChange={(newPassword) => {
-                  setSuccessMessage('Password changed successfully! Please restart the application for changes to take effect.')
-                  setTimeout(() => setSuccessMessage(''), 5000)
-                }}
-              />
+              <AdminPasswordChange />
             </div>
 
             {/* Additional Settings */}
@@ -720,8 +715,8 @@ export default function AdminDashboard() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                  <h4 className="font-medium text-blue-900 mb-2">Current Admin Email</h4>
-                  <p className="text-blue-700">{process.env.NEXT_PUBLIC_ADMIN_EMAIL || 'services@kinglemuelrealestategh.com'}</p>
+                  <h4 className="font-medium text-blue-900 mb-2">Administrator account</h4>
+                  <p className="text-blue-700">Credentials are configured privately in the deployment environment.</p>
                 </div>
                 
                 <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
@@ -930,5 +925,4 @@ export default function AdminDashboard() {
     </div>
   )
 }
-
 

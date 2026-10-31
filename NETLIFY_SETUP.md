@@ -11,6 +11,9 @@ Set these in Netlify → Site settings → Build & deploy → Environment → En
 - SUPABASE_SERVICE_ROLE_KEY
 - SUPABASE_STORAGE_BUCKET (default: `property-files`)
 - NEXT_PUBLIC_GOOGLE_MAPS_API_KEY (if using Google Maps)
+- ADMIN_EMAIL (server-only administrator email)
+- ADMIN_PASSWORD (server-only administrator password)
+- ADMIN_SESSION_SECRET (unique random secret used to sign admin sessions)
 
 ## How to add variables (UI)
 
@@ -28,9 +31,13 @@ netlify env:set NEXT_PUBLIC_SUPABASE_ANON_KEY <your-anon-key> --context producti
 netlify env:set SUPABASE_SERVICE_ROLE_KEY <your-service-role-key> --context production
 netlify env:set SUPABASE_STORAGE_BUCKET property-files --context production
 netlify env:set NEXT_PUBLIC_GOOGLE_MAPS_API_KEY <your-google-maps-key> --context production
+netlify env:set ADMIN_EMAIL <your-admin-email> --context production
+netlify env:set ADMIN_PASSWORD <your-admin-password> --context production
+netlify env:set ADMIN_SESSION_SECRET <a-unique-random-secret> --context production
 ```
 
 Then trigger a new deploy from the Netlify UI (Deploys → Trigger deploy → Clear cache and deploy site).
+Use your existing administrator credential values when setting `ADMIN_EMAIL` and `ADMIN_PASSWORD`. Never use `NEXT_PUBLIC_` prefixes for credentials or share their values in chat.
 
 ## Build settings
 

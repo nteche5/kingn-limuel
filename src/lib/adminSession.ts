@@ -5,28 +5,21 @@ export const ADMIN_COOKIE = 'kl_admin_session'
 const MAX_AGE_SECONDS = 60 * 60 * 24 * 7 // 7 days
 
 function getSecret(): string {
-  const secret =
-    process.env.ADMIN_SESSION_SECRET ||
-    process.env.SUPABASE_SERVICE_ROLE_KEY ||
-    process.env.SUPABASE_SERVICE_ROLE ||
-    process.env.SUPABASE_SERVICE_KEY ||
-    process.env.SERVICE_ROLE_KEY
-  if (!secret) throw new Error('ADMIN_SESSION_SECRET is not configured')
+  const secret = process.env.ADMIN_SESSION_SECRET
+  if (!secret) throw new Error('ADMIN_SESSION_SECRET must be configured')
   return secret
 }
 
-// Existing administrator credentials (unchanged). Server-only names are preferred;
-// the previous NEXT_PUBLIC_ names and defaults are still honoured so nothing breaks.
 export function getAdminCredentials() {
+  const email = process.env.ADMIN_EMAIL
+  const password = process.env.ADMIN_PASSWORD
+  if (!email || !password) {
+    throw new Error('ADMIN_EMAIL and ADMIN_PASSWORD must be configured')
+  }
+
   return {
-    email:
-      process.env.ADMIN_EMAIL ||
-      process.env.NEXT_PUBLIC_ADMIN_EMAIL ||
-      'services@kinglemuelrealestategh.com',
-    password:
-      process.env.ADMIN_PASSWORD ||
-      process.env.NEXT_PUBLIC_ADMIN_PASSWORD ||
-      'admin123',
+    email,
+    password,
   }
 }
 
@@ -77,10 +70,6 @@ export async function verifySessionToken(token: string | undefined | null): Prom
   if (parts.length !== 3 || parts[0] !== 'admin') return false
   const exp = Number(parts[1])
   if (!Number.isFinite(exp) || exp < Math.floor(Date.now() / 1000)) return false
-  try {
-    const expected = await hmac(`${parts[0]}.${parts[1]}`)
-    return safeEqual(expected, parts[2])
-  } catch {
-    return false
-  }
+  const expected = await hmac(`${parts[0]}.${parts[1]}`)
+  return safeEqual(expected, parts[2])
 }

@@ -23,7 +23,8 @@ export async function POST(req: NextRequest) {
       maxAge,
     })
     return res
-  } catch (e: any) {
+  } catch (error) {
+    console.error('Admin login failed:', error)
     return NextResponse.json({ error: 'Login failed. Please try again.' }, { status: 500 })
   }
 }

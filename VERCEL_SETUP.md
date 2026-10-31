@@ -20,8 +20,11 @@ Set the following under Vercel → Project → Settings → Environment Variable
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 - `SUPABASE_SERVICE_ROLE_KEY` (used by admin/server only)
 - `MAILCHANNELS_FROM` or `EMAIL_USER` (the "from" email used by contact form)
-- `NEXT_PUBLIC_ADMIN_EMAIL`
-- `NEXT_PUBLIC_ADMIN_PASSWORD`
+- `ADMIN_EMAIL` (server-only administrator email)
+- `ADMIN_PASSWORD` (server-only administrator password)
+- `ADMIN_SESSION_SECRET` (unique random secret used to sign admin sessions)
+
+Do not use `NEXT_PUBLIC_` prefixes for administrator credentials. Keep the existing credential values when moving them to these server-only variable names.
 
 Optional alternatives if you switch email provider:
 - `SENDGRID_API_KEY` (if you later enable SendGrid in `src/lib/emailService.ts`)
@@ -37,5 +40,4 @@ Optional alternatives if you switch email provider:
 - API routes under `src/app/api/*` run on Vercel Serverless by default
 - Images are unoptimized on purpose (`images.unoptimized = true`) so no external loaders are required
 - If you previously deployed to Cloudflare/Netlify, those configs are removed and won’t affect Vercel
-
 
