@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Building2, Phone, Mail, MapPin, Facebook, Twitter, Instagram, MessageCircle } from 'lucide-react'
+import { Building2, Phone, Mail, MapPin, Facebook, Instagram, MessageCircle } from 'lucide-react'
 
 const Footer = () => {
   return (
@@ -26,8 +26,10 @@ const Footer = () => {
               <a href="https://wa.me/233244996878" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-green-400 transition-colors">
                 <MessageCircle className="h-5 w-5" />
               </a>
-              <a href="#" className="text-gray-400 hover:text-primary-400 transition-colors">
-                <Twitter className="h-5 w-5" />
+              <a href="https://x.com" target="_blank" rel="noopener noreferrer" aria-label="X" title="X" className="text-gray-400 hover:text-primary-400 transition-colors">
+                <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path d="M18.9 1.2h3.7l-8.1 9.2L24 22.8h-7.4l-5.8-7.6-6.6 7.6H.5l8.6-9.8L0 1.2h7.6l5.2 6.9zm-1.3 19.5h2.1L6.5 3.2H4.3z" />
+                </svg>
               </a>
               <a href="#" className="text-gray-400 hover:text-primary-400 transition-colors">
                 <Instagram className="h-5 w-5" />
@@ -93,5 +95,4 @@ const Footer = () => {
 }
 
 export default Footer
-
 

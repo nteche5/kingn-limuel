@@ -12,7 +12,6 @@ import {
   CheckCircle,
   AlertCircle,
   Facebook,
-  Twitter,
   MessageCircle,
   Search,
   ArrowUp,
@@ -168,12 +167,17 @@ export default function ContactPage() {
                 </div>
               </a>
               <a 
-                href="#" 
+                href="https://x.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="X"
                 className="group relative p-4 rounded-full bg-gray-700 hover:bg-sky-500 transition-all duration-300 transform hover:scale-110 hover:shadow-lg"
               >
-                <Twitter className="h-8 w-8 text-sky-400 group-hover:text-white transition-colors duration-300" />
+                <svg className="h-8 w-8 text-sky-400 group-hover:text-white transition-colors duration-300" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path d="M18.9 1.2h3.7l-8.1 9.2L24 22.8h-7.4l-5.8-7.6-6.6 7.6H.5l8.6-9.8L0 1.2h7.6l5.2 6.9zm-1.3 19.5h2.1L6.5 3.2H4.3z" />
+                </svg>
                 <div className="absolute -top-12 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs px-3 py-1 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap shadow-lg">
-                  Twitter
+                  X
                 </div>
               </a>
               <a 
@@ -352,5 +356,3 @@ export default function ContactPage() {
     </div>
   )
 }
-
-
