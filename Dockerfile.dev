@@ -1,4 +1,4 @@
-FROM node:20-bookworm
+FROM node:26-bookworm
 
 WORKDIR /app
 
@@ -19,5 +19,4 @@ ENV SWC_USE_WASM=1
 EXPOSE 3000
 
 CMD ["npm", "run", "dev", "--", "-H", "0.0.0.0"]
-
 

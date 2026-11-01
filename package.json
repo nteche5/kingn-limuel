@@ -16,7 +16,7 @@
     "vercel-build": "npm run build:type-check"
   },
   "engines": {
-    "node": ">=20 <21",
+    "node": "26.x",
     "npm": ">=10"
   },
   "dependencies": {
